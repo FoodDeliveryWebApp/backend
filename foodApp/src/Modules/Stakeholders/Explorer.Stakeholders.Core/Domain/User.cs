@@ -35,5 +35,6 @@ public enum UserRole
     Administrator,
     Manager,
     Worker,
-    DeliveryMan
+    DeliveryMan,
+    Guest
 }

@@ -15,9 +15,9 @@ public class AuthenticationController : BaseApiController
     }
 
     [HttpPost]
-    public ActionResult<AuthenticationTokensDto> RegisterTourist([FromBody] AccountRegistrationDto account)
+    public ActionResult<AuthenticationTokensDto> RegisterGuest([FromBody] AccountRegistrationDto account)
     {
-        var result = _authenticationService.RegisterTourist(account);
+        var result = _authenticationService.RegisterGuest(account);
         return CreateResponse(result);
     }
 

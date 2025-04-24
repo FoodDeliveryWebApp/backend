@@ -37,16 +37,15 @@ public class AuthenticationService : IAuthenticationService
         return _tokenGenerator.GenerateAccessToken(user, personId);
     }
 
-    public Result<AuthenticationTokensDto> RegisterTourist(AccountRegistrationDto account)
+    public Result<AuthenticationTokensDto> RegisterGuest(AccountRegistrationDto account)
     {
-        if(_userRepository.Exists(account.Username)) return Result.Fail(FailureCode.NonUniqueUsername);
+        if (_userRepository.Exists(account.Username)) return Result.Fail(FailureCode.NonUniqueUsername);
 
         try
         {
-            //  var user = _userRepository.Create(new User(account.Username, account.Password, UserRole.Tourist, true));
-            User user = new User("test","test",UserRole.Worker,true);
+            var user = _userRepository.Create(new User(account.Username, account.Password, UserRole.Guest, true));
             var person = _personRepository.Create(new Person(user.Id, account.Name, account.Surname, account.Email));
-            
+
             return _tokenGenerator.GenerateAccessToken(user, person.Id);
         }
         catch (ArgumentException e)
