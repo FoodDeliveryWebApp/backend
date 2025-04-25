@@ -27,13 +27,20 @@ public static class StakeholdersStartup
     {
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<ITokenGenerator, JwtGenerator>();
+        services.AddScoped<IRestaurantService, RestaurantService>();
+        services.AddScoped<IFoodService, FoodService>();
+        services.AddScoped<IRestaurantRatingService, RestaurantRatingService>();
+        services.AddScoped<IOrderService, OrderService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)
     {
         services.AddScoped(typeof(ICrudRepository<Person>), typeof(CrudDatabaseRepository<Person, StakeholdersContext>));
         services.AddScoped<IUserRepository, UserDatabaseRepository>();
-
+        services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+        services.AddScoped<IFoodRepository, FoodRepository>();
+        services.AddScoped<IRestaurantRatingRepository, RestaurantRatingRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddDbContext<StakeholdersContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("stakeholders"),
                 x => x.MigrationsHistoryTable("__EFMigrationsHistory", "stakeholders")));

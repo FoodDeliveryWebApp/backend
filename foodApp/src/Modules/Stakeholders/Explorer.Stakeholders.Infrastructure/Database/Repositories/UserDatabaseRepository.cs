@@ -1,5 +1,6 @@
 ﻿using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Explorer.Stakeholders.Infrastructure.Database.Repositories;
 
@@ -34,5 +35,20 @@ public class UserDatabaseRepository : IUserRepository
         var person = _dbContext.People.FirstOrDefault(i => i.UserId == userId);
         if (person == null) throw new KeyNotFoundException("Not found.");
         return person.Id;
+    }
+
+    // Asynchronous version of Create
+    public async Task<User> CreateAsync(User user)
+    {
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+        return user;
+    }
+
+    // Asynchronous version of GetById
+    public async Task<User?> GetByIdAsync(long id)
+    {
+        return await _dbContext.Users
+            .FirstOrDefaultAsync(user => user.Id == id);
     }
 }

@@ -13,7 +13,7 @@ using Explorer.Stakeholders.Core.Domain;
 
 namespace Explorer.Stakeholders.Core.UseCases
 {
-    internal class FoodService : IFoodService
+    public class FoodService : IFoodService
     {
         private readonly IFoodRepository _foodRepository;
 

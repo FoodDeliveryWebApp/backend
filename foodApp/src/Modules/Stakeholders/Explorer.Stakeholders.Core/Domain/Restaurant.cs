@@ -18,6 +18,8 @@ namespace Explorer.Stakeholders.Core.Domain
         public List<Food> Foods { get; private set; } = new();
         public List<User> Workers { get; private set; } = new();
 
+        public User Manager { get; private set; }
+
         public Restaurant(string name, string address, string phoneNumber, bool isActive, CuisineType cuisine, string imageUrl)
         {
             Name = name;

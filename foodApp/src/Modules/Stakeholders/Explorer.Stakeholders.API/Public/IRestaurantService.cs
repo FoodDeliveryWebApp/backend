@@ -11,5 +11,11 @@ namespace Explorer.Stakeholders.API.Public
     public interface IRestaurantService
     {
         Task<Result<IEnumerable<RestaurantDto>>> GetAllRestaurantsAsync();
+        Task<RestaurantDto> AddRestaurantAsync(RestaurantDto dto);
+        Task<Result> AddWorkerToRestaurantAsync(long restaurantId, UserDto workerDto);
+        Task<Result> AddFoodToRestaurantAsync(FoodDto foodDto);
+
+
+
     }
 }

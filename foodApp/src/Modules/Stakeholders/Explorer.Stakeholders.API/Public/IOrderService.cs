@@ -10,6 +10,8 @@ namespace Explorer.Stakeholders.API.Public
     {
         Task<OrderDto> CreateOrderAsync(OrderDto orderDto);
         Task<List<OrderDto>> GetAllOrdersForWorker(long workerId);
+        
+        Task<List<OrderDto>> GetAllOrdersForGuest(long workerId);
         Task<OrderDto> UpdateOrderStatus(long orderId, string newStatus);
     }
 }

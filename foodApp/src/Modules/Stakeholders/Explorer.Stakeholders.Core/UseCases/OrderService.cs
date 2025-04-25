@@ -102,6 +102,47 @@ namespace Explorer.Stakeholders.Core.UseCases
             return filteredOrders;
         }
 
+        public async Task<List<OrderDto>> GetAllOrdersForGuest(long guestId)
+        {
+            // Step 1: Retrieve all orders
+            var orders = await _orderRepository.GetAllOrdersAsync(); // Assuming this method exists and fetches all orders.
+
+            // Step 2: Filter orders where the worker is in the restaurant's workers list
+            var filteredOrders = new List<OrderDto>();
+
+            foreach (var order in orders)
+            {
+              
+                    if (order.UserId==guestId) // Check if the worker is in the restaurant's worker list.
+                    {
+                        // Convert order to OrderDto and add it to the filtered list
+                        filteredOrders.Add(new OrderDto
+                        {
+                            Id = order.Id,
+                            UserId = order.UserId,
+                            Foods = order.Foods.Select(f => new FoodDto
+                            {
+                                Id = f.Id,
+                                Name = f.Name,
+                                Price = f.Price,
+                                Description = f.Description,
+                                ImageUrl = f.ImageUrl,
+                                RestaurantId = f.RestaurantId
+                            }).ToList(),
+                            OrderTime = order.OrderTime,
+                            Status = order.Status.ToString(),
+                            ApprovalStatus = order.ApprovalStatus.ToString(),
+                            TotalPrice = order.TotalPrice,
+                            Note = order.Note
+                        });
+                        break; // No need to check further foods once the worker is found in the restaurant's workers list.
+                    }
+                
+            }
+
+            return filteredOrders;
+        }
+
 
         public async Task<OrderDto> UpdateOrderStatus(long orderId, string newStatusString)
         {

@@ -10,5 +10,10 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     {
         Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync();
         Task<Restaurant> GetRestaurantById(long restaurantId);
+        Task<Restaurant> Create(Restaurant restaurant);
+
+        Task<Restaurant?> GetByIdAsync(long id);
+        Task UpdateAsync(Restaurant restaurant);
+
     }
 }

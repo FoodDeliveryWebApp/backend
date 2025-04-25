@@ -15,5 +15,8 @@ namespace Explorer.Stakeholders.API.Dtos
         public bool IsActive { get; set; }  // Status restorana (da li je aktivan)
         public string Cuisine { get; set; }  // Tip kuhinje (npr. Italijanska, Kineska...)
         public string ImageUrl { get; set; }  // URL slike restorana
+
+        public UserDto Manager { get; set; }
+
     }
 }

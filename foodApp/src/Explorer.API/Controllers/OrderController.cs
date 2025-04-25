@@ -50,6 +50,22 @@ namespace Explorer.API.Controllers
             return Ok(orders); // Return the list of orders
         }
 
+        [HttpGet("guest/{guestId}")]
+        [Authorize(Roles = "Guest")]
+        public async Task<ActionResult<List<OrderDto>>> GetAllOrdersForGuest(long guestId)
+        {
+            var orders = await _orderService.GetAllOrdersForGuest(guestId);
+
+            if (orders.Count == 0) // No orders for the worker
+            {
+                return NotFound("No orders found for this worker.");
+            }
+
+            return Ok(orders); // Return the list of orders
+        }
+
+
+
         [HttpPut("worker/order/{orderId}/status")]
         [Authorize(Roles = "Worker")]
         public async Task<ActionResult<OrderDto>> UpdateOrderStatus(long orderId, [FromBody] string newStatus)
