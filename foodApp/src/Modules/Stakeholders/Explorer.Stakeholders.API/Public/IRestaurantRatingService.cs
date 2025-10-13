@@ -11,5 +11,6 @@ namespace Explorer.Stakeholders.API.Public
     public interface IRestaurantRatingService
     {
         Task<Result> AddRatingAsync(RestaurantRatingDto dto);
+        Task<List<RestaurantRatingDto>> GetRatingsForRestaurantAsync(long restaurantId);
     }
 }

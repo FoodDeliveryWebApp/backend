@@ -55,5 +55,23 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             return Result.Ok();
         }
+
+        public async Task<List<RestaurantRatingDto>> GetRatingsForRestaurantAsync(long restaurantId)
+        {
+            // Fetch all ratings for the restaurant
+            var ratings = await _ratingRepo.GetByRestaurantIdAsync(restaurantId);
+
+            // Map domain entities to DTOs
+            var ratingDtos = ratings.Select(r => new RestaurantRatingDto
+            {
+                Rating = r.Rating,
+                Comment = r.Comment,
+                RatedByUserId = r.RatedBy.Id,
+                RestaurantId = r.Restaurant.Id,
+                CreatedAt = r.CreatedAt
+            }).ToList();
+
+            return ratingDtos;
+        }
     }
 }

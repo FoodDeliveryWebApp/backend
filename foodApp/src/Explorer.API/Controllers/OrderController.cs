@@ -65,11 +65,23 @@ namespace Explorer.API.Controllers
         }
 
 
-
-        [HttpPut("worker/order/{orderId}/status")]
-        [Authorize(Roles = "Worker")]
+        [HttpPut("order/{orderId}/status")]
+        [Authorize(Roles = "Worker,Guest,DeliveryMan")]
         public async Task<ActionResult<OrderDto>> UpdateOrderStatus(long orderId, [FromBody] string newStatus)
         {
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+          
+            if (userRole == "Guest" && newStatus != "Canceled")
+            {
+                return Forbid("Guests can only cancel their orders.");
+            }
+
+            if (userRole == "DeliveryMan" && newStatus != "Delivered" && newStatus != "InDelivery")
+            {
+                return Forbid("DeliveryMen can only mark orders as InDelivery or Delivered.");
+            }
+
             try
             {
                 var updatedOrder = await _orderService.UpdateOrderStatus(orderId, newStatus);
@@ -77,13 +89,14 @@ namespace Explorer.API.Controllers
             }
             catch (ArgumentException ex)
             {
-                return NotFound(ex.Message);  // If the order is not found
+                return NotFound(ex.Message);  // Ako porudžbina nije pronađena
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);  // If the status can't be updated
+                return BadRequest(ex.Message);  // Ako status ne može da se promeni
             }
         }
+
 
 
 

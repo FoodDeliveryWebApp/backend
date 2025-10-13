@@ -10,25 +10,20 @@ namespace Explorer.Stakeholders.Core.Domain
     public enum OrderStatus
     {
         PickUp,
-        Delivery
-    }
-
-    public enum ApprovalStatus
-    {
-        Pending,
-        Approved,
+        Delivery,
+        Preparing,
         Rejected,
-        Picked,
         Delivered
     }
+
+   
 
     public class Order : Entity
     {
         public long UserId { get; private set; }
         public List<Food> Foods { get; private set; }
         public DateTime OrderTime { get; private set; }
-        public OrderStatus Status { get; private set; }
-        public ApprovalStatus ApprovalStatus { get;  set; }
+        public OrderStatus Status { get;  set; }
         public decimal TotalPrice => Foods.Sum(f => f.Price);
         public string Note { get; private set; }
 
@@ -37,7 +32,6 @@ namespace Explorer.Stakeholders.Core.Domain
             UserId = userId;
             Foods = foods ?? throw new ArgumentNullException(nameof(foods));
             Status = status;
-            ApprovalStatus = ApprovalStatus.Pending;
             OrderTime = DateTime.UtcNow;
             Note = note;
 
@@ -51,14 +45,6 @@ namespace Explorer.Stakeholders.Core.Domain
             if (Note.Length > 500) throw new ArgumentException("Note is too long (max 500 characters).");
         }
 
-        public void Approve()
-        {
-            ApprovalStatus = ApprovalStatus.Approved;
-        }
-
-        public void Reject()
-        {
-            ApprovalStatus = ApprovalStatus.Rejected;
-        }
+     
     }
 }

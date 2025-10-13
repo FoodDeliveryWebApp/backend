@@ -52,7 +52,6 @@ namespace Explorer.Stakeholders.Core.UseCases
                 }).ToList(),
                 OrderTime = createdOrder.OrderTime,
                 Status = createdOrder.Status.ToString(),
-                ApprovalStatus = createdOrder.ApprovalStatus.ToString(),
                 TotalPrice = createdOrder.TotalPrice,
                 Note = createdOrder.Note
             };
@@ -90,7 +89,6 @@ namespace Explorer.Stakeholders.Core.UseCases
                             }).ToList(),
                             OrderTime = order.OrderTime,
                             Status = order.Status.ToString(),
-                            ApprovalStatus = order.ApprovalStatus.ToString(),
                             TotalPrice = order.TotalPrice,
                             Note = order.Note
                         });
@@ -131,7 +129,6 @@ namespace Explorer.Stakeholders.Core.UseCases
                             }).ToList(),
                             OrderTime = order.OrderTime,
                             Status = order.Status.ToString(),
-                            ApprovalStatus = order.ApprovalStatus.ToString(),
                             TotalPrice = order.TotalPrice,
                             Note = order.Note
                         });
@@ -153,20 +150,20 @@ namespace Explorer.Stakeholders.Core.UseCases
                 throw new ArgumentException("Order not found");
             }
            
-            if (!Enum.TryParse<ApprovalStatus>(newStatusString, out var newStatus))
+            if (!Enum.TryParse<OrderStatus>(newStatusString, out var newStatus))
             {
                 throw new ArgumentException($"Invalid approval status: {newStatusString}");
             }
 
             // Step 2: Check if the status is valid for this worker
-            // For example, only a worker can change to "Picked" or "Delivered"
-            if (order.ApprovalStatus == ApprovalStatus.Delivered)
+            
+            if (order.Status == OrderStatus.Rejected)
             {
-                throw new InvalidOperationException("This order has already been delivered and cannot be updated.");
+                throw new InvalidOperationException("This order has already been rejected and cannot be updated.");
             }
 
             // Step 3: Update the approval status
-            order.ApprovalStatus = newStatus;
+            order.Status = newStatus;
 
             // Step 4: Save the updated order back to the database
             var updatedOrder = await _orderRepository.UpdateOrderAsync(order);
@@ -187,7 +184,6 @@ namespace Explorer.Stakeholders.Core.UseCases
                 }).ToList(),
                 OrderTime = updatedOrder.OrderTime,
                 Status = updatedOrder.Status.ToString(),
-                ApprovalStatus = updatedOrder.ApprovalStatus.ToString(),
                 TotalPrice = updatedOrder.TotalPrice,
                 Note = updatedOrder.Note
             };
