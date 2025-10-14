@@ -10,5 +10,9 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     {
         Task AddAsync(RestaurantRating rating);
         Task<List<RestaurantRating>> GetByRestaurantIdAsync(long restaurantId);
+
+        Task<RestaurantRating> GetByOrderIdAsync(long orderId);
+        Task UpdateAsync(RestaurantRating rating);
+
     }
 }

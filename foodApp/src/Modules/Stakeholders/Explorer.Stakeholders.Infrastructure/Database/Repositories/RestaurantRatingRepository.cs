@@ -25,6 +25,22 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<RestaurantRating> GetByOrderIdAsync(long orderId)
+        {
+            return await _context.RestaurantRatings
+                .Include(r => r.Restaurant)
+                .Include(r => r.RatedBy)
+                .FirstOrDefaultAsync(r => r.Restaurant.Id == orderId && !r.isDeleted);
+        }
+
+        public async Task UpdateAsync(RestaurantRating rating)
+        {
+            _context.RestaurantRatings.Update(rating);
+            await _context.SaveChangesAsync();
+        }
+
+
+
         // Get all ratings for a specific restaurant by its ID
         public async Task<List<RestaurantRating>> GetByRestaurantIdAsync(long restaurantId)
         {

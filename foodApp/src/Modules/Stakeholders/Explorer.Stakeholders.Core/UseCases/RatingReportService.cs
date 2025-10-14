@@ -15,15 +15,20 @@ namespace Explorer.Stakeholders.Core.UseCases
         private readonly IUserRepository _userRepository;
         private readonly IOrderRepository _orderRepository;
 
+        private readonly IRestaurantRatingRepository _ratingRepository;
+
         public RatingReportService(
             IRatingReportRepository ratingReportRepository,
             IUserRepository userRepository,
-            IOrderRepository orderRepository)
+            IOrderRepository orderRepository,
+            IRestaurantRatingRepository ratingRepository)
         {
             _ratingReportRepository = ratingReportRepository;
             _userRepository = userRepository;
             _orderRepository = orderRepository;
+            _ratingRepository = ratingRepository;
         }
+
 
         public async Task<RatingReportDto> CreateReportAsync(RatingReportDto dto)
         {
@@ -51,11 +56,24 @@ namespace Explorer.Stakeholders.Core.UseCases
             if (!Enum.TryParse<RatingReportStatus>(newStatus, true, out var parsedStatus))
                 throw new ArgumentException("Invalid status value.");
 
+            // Ako je prijava odobrena — brišemo povezani rating
+            if (parsedStatus == RatingReportStatus.Approved)
+            {
+                var rating = await _ratingRepository.GetByOrderIdAsync(report.Order.Id);
+                if (rating != null)
+                {
+                    rating.isDeleted = true;
+                    await _ratingRepository.UpdateAsync(rating);
+                }
+            }
+
             report.UpdateStatus(parsedStatus);
             var updated = await _ratingReportRepository.UpdateAsync(report);
 
             return ToDto(updated);
         }
+
+
 
         public async Task<List<RatingReportDto>> GetAllReportsAsync()
         {
