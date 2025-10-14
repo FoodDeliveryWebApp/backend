@@ -11,18 +11,45 @@ public class StakeholdersContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<RestaurantRating> RestaurantRatings { get; set; }
 
+    public DbSet<RatingReport> RatingReports { get; set; }
+
+
     public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("stakeholders");
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
+        ConfigureRatingReport(modelBuilder);
         ConfigureStakeholder(modelBuilder);
         ConfigureRestaurant(modelBuilder);
         ConfigureFood(modelBuilder);
         ConfigureOrder(modelBuilder);
         ConfigureRestaurantRating(modelBuilder);
     }
+
+    private static void ConfigureRatingReport(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<RatingReport>()
+            .Property(r => r.Comment)
+            .IsRequired();
+
+        modelBuilder.Entity<RatingReport>()
+            .Property(r => r.Status)
+            .IsRequired()
+            .HasConversion<string>();
+
+        modelBuilder.Entity<RatingReport>()
+            .HasOne(r => r.Order)
+            .WithMany()
+            .IsRequired();
+
+        modelBuilder.Entity<RatingReport>()
+            .HasOne(r => r.Manager)
+            .WithMany()
+            .IsRequired();
+    }
+
 
     private static void ConfigureStakeholder(ModelBuilder modelBuilder)
     {
@@ -102,10 +129,6 @@ public class StakeholdersContext : DbContext
             .IsRequired()
             .HasConversion<string>();
 
-        modelBuilder.Entity<Order>()
-            .Property(o => o.ApprovalStatus)
-            .IsRequired()
-            .HasConversion<string>();
 
         modelBuilder.Entity<Order>()
             .Property(o => o.Note)

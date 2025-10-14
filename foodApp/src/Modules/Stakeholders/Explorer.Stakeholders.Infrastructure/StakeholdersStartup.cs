@@ -31,6 +31,7 @@ public static class StakeholdersStartup
         services.AddScoped<IFoodService, FoodService>();
         services.AddScoped<IRestaurantRatingService, RestaurantRatingService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<IRatingReportService, RatingReportService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)
@@ -41,6 +42,7 @@ public static class StakeholdersStartup
         services.AddScoped<IFoodRepository, FoodRepository>();
         services.AddScoped<IRestaurantRatingRepository, RestaurantRatingRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IRatingReportRepository, RatingReportRepository>();
         services.AddDbContext<StakeholdersContext>(opt =>
             opt.UseNpgsql(DbConnectionStringBuilder.Build("stakeholders"),
                 x => x.MigrationsHistoryTable("__EFMigrationsHistory", "stakeholders")));

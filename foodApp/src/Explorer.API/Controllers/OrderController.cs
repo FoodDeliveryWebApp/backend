@@ -98,6 +98,29 @@ namespace Explorer.API.Controllers
         }
 
 
+        [HttpGet("manager/{managerId}/earnings")]
+        [Authorize(Roles = "Manager")]
+        public async Task<ActionResult<object>> GetAllOrdersAndEarningsForManager(long managerId)
+        {
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            if (userRole != "Manager")
+            {
+                return Unauthorized("Only Managers are allowed to view earnings.");
+            }
+
+            var result = await _orderService.GetAllOrdersAndEarningsForManager(managerId);
+
+            if (result.Orders.Count == 0)
+            {
+                return NotFound("No orders found for this manager's restaurants.");
+            }
+
+            return Ok(new
+            {
+                Orders = result.Orders,
+                TotalEarnings = result.TotalEarnings
+            });
+        }
 
 
 

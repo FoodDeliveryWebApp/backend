@@ -21,6 +21,55 @@ namespace Explorer.Stakeholders.Core.UseCases
             _restaurantRepository = restaurantRepository;  // Inject the restaurant repository here
         }
 
+        public async Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(long managerId)
+        {
+            var orders = await _orderRepository.GetAllOrdersAsync();
+            var restaurants = await _restaurantRepository.GetAllRestaurantsAsync();
+
+            // Filtriraj restorane koji pripadaju ovom menadžeru
+            var managerRestaurants = restaurants.Where(r => r.Manager.Id == managerId).ToList();
+            if (!managerRestaurants.Any())
+            {
+                return (new List<OrderDto>(), 0);
+            }
+
+            // Uzmemo sve ID-jeve restorana koje menadžer poseduje
+            var restaurantIds = managerRestaurants.Select(r => r.Id).ToList();
+
+            // Filtriraj porudžbine koje pripadaju restoranima ovog menadžera
+            var managerOrders = orders.Where(o =>
+                o.Foods.Any(f => restaurantIds.Contains(f.RestaurantId))
+            ).ToList();
+
+            // Računaj ukupnu zaradu samo od Delivered porudžbina
+            decimal totalEarnings = managerOrders
+                .Where(o => o.Status == OrderStatus.Delivered)
+                .Sum(o => o.Foods.Where(f => restaurantIds.Contains(f.RestaurantId)).Sum(f => f.Price));
+
+            // Konvertuj u DTO
+            var orderDtos = managerOrders.Select(order => new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                Foods = order.Foods.Select(f => new FoodDto
+                {
+                    Id = f.Id,
+                    Name = f.Name,
+                    Price = f.Price,
+                    Description = f.Description,
+                    ImageUrl = f.ImageUrl,
+                    RestaurantId = f.RestaurantId
+                }).ToList(),
+                OrderTime = order.OrderTime,
+                Status = order.Status.ToString(),
+                TotalPrice = order.TotalPrice,
+                Note = order.Note
+            }).ToList();
+
+            return (orderDtos, totalEarnings);
+        }
+
+
         public async Task<OrderDto> CreateOrderAsync(OrderDto orderDto)
         {
             // Convert DTO to domain model

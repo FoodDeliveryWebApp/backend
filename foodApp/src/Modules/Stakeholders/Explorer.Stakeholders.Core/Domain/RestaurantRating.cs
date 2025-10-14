@@ -15,6 +15,8 @@ namespace Explorer.Stakeholders.Core.Domain
         public Restaurant Restaurant { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
+        public bool isDeleted { get; set; }
+
         public RestaurantRating(int rating, string comment, User ratedBy, Restaurant restaurant)
         {
             Rating = rating;
@@ -22,7 +24,7 @@ namespace Explorer.Stakeholders.Core.Domain
             RatedBy = ratedBy ?? throw new ArgumentNullException(nameof(ratedBy));
             Restaurant = restaurant ?? throw new ArgumentNullException(nameof(restaurant));
             CreatedAt = DateTime.UtcNow;
-
+            isDeleted = false;
             Validate();
         }
 
