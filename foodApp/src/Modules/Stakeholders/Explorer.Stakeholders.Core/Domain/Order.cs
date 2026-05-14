@@ -9,11 +9,15 @@ namespace Explorer.Stakeholders.Core.Domain
 {
     public enum OrderStatus
     {
-        PickUp,
-        Delivery,
-        Preparing,
-        Rejected,
-        Delivered
+        Pending,     // Newly placed by guest, awaiting worker action
+        Accepted,    // Accepted by worker, being prepared
+        Rejected,    // Rejected by worker
+        Preparing,   // Being prepared (legacy / alternative to Accepted)
+        InDelivery,  // Picked up by delivery person
+        Delivered,   // Successfully delivered
+        Canceled,    // Canceled by guest
+        PickUp,      // Ready for guest pickup
+        Delivery     // Delivery type marker (kept for compatibility)
     }
 
    
@@ -26,6 +30,8 @@ namespace Explorer.Stakeholders.Core.Domain
         public OrderStatus Status { get;  set; }
         public decimal TotalPrice => Foods.Sum(f => f.Price);
         public string Note { get; private set; }
+
+        protected Order() { }
 
         public Order(long userId, List<Food> foods, OrderStatus status, string note = "")
         {

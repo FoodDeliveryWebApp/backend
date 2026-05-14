@@ -15,7 +15,6 @@ namespace Explorer.Stakeholders.API.Public
         Task<OrderDto> UpdateOrderStatus(long orderId, string newStatus);
 
         Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(long managerId);
-
-
+        Task<List<OrderDto>> GetOrdersForDeliveryAsync();
     }
 }

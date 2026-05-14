@@ -20,6 +20,8 @@ namespace Explorer.Stakeholders.Core.Domain
 
         public User Manager { get; private set; }
 
+        protected Restaurant() { }
+
         public Restaurant(string name, string address, string phoneNumber, bool isActive, CuisineType cuisine, string imageUrl)
         {
             Name = name;
@@ -37,6 +39,11 @@ namespace Explorer.Stakeholders.Core.Domain
             if (string.IsNullOrWhiteSpace(Address)) throw new ArgumentException("Invalid restaurant address.");
             if (string.IsNullOrWhiteSpace(PhoneNumber)) throw new ArgumentException("Invalid phone number.");
             if (string.IsNullOrWhiteSpace(ImageUrl)) throw new ArgumentException("Invalid image URL.");
+        }
+
+        public void SetManager(User manager)
+        {
+            Manager = manager ?? throw new ArgumentNullException(nameof(manager));
         }
 
         public string GetCuisineTypeName()

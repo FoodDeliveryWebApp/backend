@@ -53,8 +53,10 @@ public static class AuthConfiguration
         services.AddAuthorization(options =>
         {
             options.AddPolicy("administratorPolicy", policy => policy.RequireRole("administrator"));
-            options.AddPolicy("authorPolicy", policy => policy.RequireRole("author"));
-            options.AddPolicy("touristPolicy", policy => policy.RequireRole("tourist"));
+            options.AddPolicy("managerPolicy",       policy => policy.RequireRole("manager"));
+            options.AddPolicy("workerPolicy",        policy => policy.RequireRole("worker"));
+            options.AddPolicy("deliveryManPolicy",   policy => policy.RequireRole("deliveryman"));
+            options.AddPolicy("guestPolicy",         policy => policy.RequireRole("guest"));
         });
     }
 }

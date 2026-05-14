@@ -18,8 +18,27 @@ namespace Explorer.Stakeholders.Core.UseCases
         public OrderService(IOrderRepository orderRepository, IRestaurantRepository restaurantRepository)
         {
             _orderRepository = orderRepository;
-            _restaurantRepository = restaurantRepository;  // Inject the restaurant repository here
+            _restaurantRepository = restaurantRepository;
         }
+
+        private static OrderDto MapToDto(Order order) => new OrderDto
+        {
+            Id = order.Id,
+            UserId = order.UserId,
+            Foods = order.Foods.Select(f => new FoodDto
+            {
+                Id = f.Id,
+                Name = f.Name,
+                Price = f.Price,
+                Description = f.Description,
+                ImageUrl = f.ImageUrl,
+                RestaurantId = f.RestaurantId
+            }).ToList(),
+            OrderTime = order.OrderTime,
+            Status = order.Status.ToString(),
+            TotalPrice = order.TotalPrice,
+            Note = order.Note
+        };
 
         public async Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(long managerId)
         {
@@ -46,25 +65,7 @@ namespace Explorer.Stakeholders.Core.UseCases
                 .Where(o => o.Status == OrderStatus.Delivered)
                 .Sum(o => o.Foods.Where(f => restaurantIds.Contains(f.RestaurantId)).Sum(f => f.Price));
 
-            // Konvertuj u DTO
-            var orderDtos = managerOrders.Select(order => new OrderDto
-            {
-                Id = order.Id,
-                UserId = order.UserId,
-                Foods = order.Foods.Select(f => new FoodDto
-                {
-                    Id = f.Id,
-                    Name = f.Name,
-                    Price = f.Price,
-                    Description = f.Description,
-                    ImageUrl = f.ImageUrl,
-                    RestaurantId = f.RestaurantId
-                }).ToList(),
-                OrderTime = order.OrderTime,
-                Status = order.Status.ToString(),
-                TotalPrice = order.TotalPrice,
-                Note = order.Note
-            }).ToList();
+            var orderDtos = managerOrders.Select(MapToDto).ToList();
 
             return (orderDtos, totalEarnings);
         }
@@ -84,26 +85,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             );
 
             var createdOrder = await _orderRepository.CreateOrderAsync(order);
-
-            // Convert domain model back to DTO
-            return new OrderDto
-            {
-                Id = createdOrder.Id,
-                UserId = createdOrder.UserId,
-                Foods = createdOrder.Foods.Select(f => new FoodDto
-                {
-                    Id = f.Id,
-                    Name = f.Name,
-                    Price = f.Price,
-                    Description = f.Description,
-                    ImageUrl = f.ImageUrl,
-                    RestaurantId = f.RestaurantId
-                }).ToList(),
-                OrderTime = createdOrder.OrderTime,
-                Status = createdOrder.Status.ToString(),
-                TotalPrice = createdOrder.TotalPrice,
-                Note = createdOrder.Note
-            };
+            return MapToDto(createdOrder);
         }
 
 
@@ -123,25 +105,8 @@ namespace Explorer.Stakeholders.Core.UseCases
                     if (restaurant.Workers.Any(worker => worker.Id == workerId)) // Check if the worker is in the restaurant's worker list.
                     {
                         // Convert order to OrderDto and add it to the filtered list
-                        filteredOrders.Add(new OrderDto
-                        {
-                            Id = order.Id,
-                            UserId = order.UserId,
-                            Foods = order.Foods.Select(f => new FoodDto
-                            {
-                                Id = f.Id,
-                                Name = f.Name,
-                                Price = f.Price,
-                                Description = f.Description,
-                                ImageUrl = f.ImageUrl,
-                                RestaurantId = f.RestaurantId
-                            }).ToList(),
-                            OrderTime = order.OrderTime,
-                            Status = order.Status.ToString(),
-                            TotalPrice = order.TotalPrice,
-                            Note = order.Note
-                        });
-                        break; // No need to check further foods once the worker is found in the restaurant's workers list.
+                        filteredOrders.Add(MapToDto(order));
+                        break;
                     }
                 }
             }
@@ -160,28 +125,9 @@ namespace Explorer.Stakeholders.Core.UseCases
             foreach (var order in orders)
             {
               
-                    if (order.UserId==guestId) // Check if the worker is in the restaurant's worker list.
+                    if (order.UserId == guestId)
                     {
-                        // Convert order to OrderDto and add it to the filtered list
-                        filteredOrders.Add(new OrderDto
-                        {
-                            Id = order.Id,
-                            UserId = order.UserId,
-                            Foods = order.Foods.Select(f => new FoodDto
-                            {
-                                Id = f.Id,
-                                Name = f.Name,
-                                Price = f.Price,
-                                Description = f.Description,
-                                ImageUrl = f.ImageUrl,
-                                RestaurantId = f.RestaurantId
-                            }).ToList(),
-                            OrderTime = order.OrderTime,
-                            Status = order.Status.ToString(),
-                            TotalPrice = order.TotalPrice,
-                            Note = order.Note
-                        });
-                        break; // No need to check further foods once the worker is found in the restaurant's workers list.
+                        filteredOrders.Add(MapToDto(order));
                     }
                 
             }
@@ -214,28 +160,14 @@ namespace Explorer.Stakeholders.Core.UseCases
             // Step 3: Update the approval status
             order.Status = newStatus;
 
-            // Step 4: Save the updated order back to the database
             var updatedOrder = await _orderRepository.UpdateOrderAsync(order);
+            return MapToDto(updatedOrder);
+        }
 
-            // Step 5: Convert the domain model to a DTO for the response
-            return new OrderDto
-            {
-                Id = updatedOrder.Id,
-                UserId = updatedOrder.UserId,
-                Foods = updatedOrder.Foods.Select(f => new FoodDto
-                {
-                    Id = f.Id,
-                    Name = f.Name,
-                    Price = f.Price,
-                    Description = f.Description,
-                    ImageUrl = f.ImageUrl,
-                    RestaurantId = f.RestaurantId
-                }).ToList(),
-                OrderTime = updatedOrder.OrderTime,
-                Status = updatedOrder.Status.ToString(),
-                TotalPrice = updatedOrder.TotalPrice,
-                Note = updatedOrder.Note
-            };
+        public async Task<List<OrderDto>> GetOrdersForDeliveryAsync()
+        {
+            var orders = await _orderRepository.GetOrdersByStatusAsync(OrderStatus.Accepted);
+            return orders.Select(MapToDto).ToList();
         }
     }
 

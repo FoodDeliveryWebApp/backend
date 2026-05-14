@@ -18,6 +18,7 @@ namespace Explorer.Stakeholders.Core.Domain
         public RatingReportStatus Status { get; private set; }  // Status prijave
         public DateTime CreatedAt { get; private set; }   // Kada je prijava kreirana
 
+        protected RatingReport() { }
         // Konstruktor
         public RatingReport(Order order, User manager, string comment, RatingReportStatus status = RatingReportStatus.Pending)
         {

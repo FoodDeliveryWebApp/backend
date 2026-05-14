@@ -18,20 +18,24 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             _context = context;
         }
 
-        // Get all restaurants
         public async Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync()
         {
-            return await _context.Restaurants.ToListAsync();
+            return await _context.Restaurants
+                .Include(r => r.Manager)
+                .Include(r => r.Workers)
+                .Include(r => r.Foods)
+                .ToListAsync();
         }
 
-        // Get a restaurant by its ID
         public async Task<Restaurant> GetRestaurantById(long restaurantId)
         {
             return await _context.Restaurants
+                .Include(r => r.Manager)
+                .Include(r => r.Workers)
+                .Include(r => r.Foods)
                 .FirstOrDefaultAsync(r => r.Id == restaurantId);
         }
 
-        // Create a new restaurant
         public async Task<Restaurant> Create(Restaurant restaurant)
         {
             await _context.Restaurants.AddAsync(restaurant);
@@ -39,10 +43,12 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             return restaurant;
         }
 
-        // Get a restaurant by its ID with asynchronous method
         public async Task<Restaurant?> GetByIdAsync(long id)
         {
             return await _context.Restaurants
+                .Include(r => r.Manager)
+                .Include(r => r.Workers)
+                .Include(r => r.Foods)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 

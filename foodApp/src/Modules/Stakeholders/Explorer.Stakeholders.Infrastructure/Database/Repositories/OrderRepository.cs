@@ -44,10 +44,17 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
 
         public async Task<Order> UpdateOrderAsync(Order order)
         {
-            // Update the order in the database
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
             return order;
+        }
+
+        public async Task<List<Order>> GetOrdersByStatusAsync(OrderStatus status)
+        {
+            return await _context.Orders
+                .Include(o => o.Foods)
+                .Where(o => o.Status == status)
+                .ToListAsync();
         }
     }
 }

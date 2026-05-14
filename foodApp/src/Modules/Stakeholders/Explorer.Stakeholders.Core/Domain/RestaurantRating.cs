@@ -17,6 +17,8 @@ namespace Explorer.Stakeholders.Core.Domain
 
         public bool isDeleted { get; set; }
 
+        protected RestaurantRating() { }
+
         public RestaurantRating(int rating, string comment, User ratedBy, Restaurant restaurant)
         {
             Rating = rating;

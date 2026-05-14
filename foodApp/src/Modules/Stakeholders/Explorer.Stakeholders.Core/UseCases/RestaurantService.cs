@@ -1,4 +1,5 @@
-﻿using Explorer.Stakeholders.API.Dtos;
+﻿using Explorer.BuildingBlocks.Core.UseCases;
+using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
@@ -15,11 +16,13 @@ namespace Explorer.Stakeholders.Core.UseCases
     {
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICrudRepository<Person> _personRepository;
 
-        public RestaurantService(IRestaurantRepository restaurantRepository, IUserRepository userRepository)
+        public RestaurantService(IRestaurantRepository restaurantRepository, IUserRepository userRepository, ICrudRepository<Person> personRepository)
         {
             _restaurantRepository = restaurantRepository;
             _userRepository = userRepository;
+            _personRepository = personRepository;
         }
 
         public async Task<Result> AddWorkerToRestaurantAsync(long restaurantId, UserDto workerDto)
@@ -37,10 +40,10 @@ namespace Explorer.Stakeholders.Core.UseCases
                 workerDto.IsActive
             );
 
-            // Save the user
             await _userRepository.CreateAsync(worker);
+            var email = workerDto.Email ?? workerDto.Username;
+            _personRepository.Create(new Person(worker.Id, workerDto.Name ?? workerDto.Username, workerDto.Surname ?? "-", email));
 
-            // Add the worker to the restaurant
             restaurant.Workers.Add(worker);
             await _restaurantRepository.UpdateAsync(restaurant);
 
@@ -121,9 +124,7 @@ namespace Explorer.Stakeholders.Core.UseCases
                 dto.ImageUrl
             );
 
-            // Assign the manager
-            restaurant.GetType().GetProperty("Manager")?.SetValue(restaurant, manager);
-
+            restaurant.SetManager(manager);
             await _restaurantRepository.Create(restaurant);
 
             // Return the DTO

@@ -10,7 +10,8 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     {
         Task<Order> CreateOrderAsync(Order order);
         Task<List<Order>> GetAllOrdersAsync();
-        Task<Order> GetOrderByIdAsync(long orderId); 
+        Task<Order> GetOrderByIdAsync(long orderId);
         Task<Order> UpdateOrderAsync(Order order);
+        Task<List<Order>> GetOrdersByStatusAsync(OrderStatus status);
     }
 }

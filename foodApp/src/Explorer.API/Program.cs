@@ -1,4 +1,6 @@
 using Explorer.API.Startup;
+using Explorer.Stakeholders.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,10 +29,16 @@ else
 app.UseRouting();
 app.UseCors(corsPolicy);
 app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
+    context.Database.EnsureCreated();
+}
 
 app.Run();
 
