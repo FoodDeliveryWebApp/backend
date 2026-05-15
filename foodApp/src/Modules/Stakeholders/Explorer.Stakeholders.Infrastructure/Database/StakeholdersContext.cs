@@ -74,21 +74,21 @@ public class StakeholdersContext : DbContext
         // CuisineType stored as int (no HasConversion): Italian=0, Chinese=1, Serbian=2
         // ManagerId is a shadow FK property generated from the Manager navigation
         modelBuilder.Entity<Restaurant>().HasData(
-            new { Id = -1L, Name = "Pizzeria Roma", Address = "Bulevar Oslobodjenja 1, Novi Sad", PhoneNumber = "021-555-001", IsActive = true, Cuisine = CuisineType.Italian, ImageUrl = "https://example.com/roma.jpg",   ManagerId = -2L },
-            new { Id = -2L, Name = "Kineski Zid",   Address = "Zmaj Jovina 10, Novi Sad",         PhoneNumber = "021-555-002", IsActive = true, Cuisine = CuisineType.Chinese, ImageUrl = "https://example.com/china.jpg",  ManagerId = -3L },
-            new { Id = -3L, Name = "Srpska Kafana", Address = "Dunavska 5, Novi Sad",             PhoneNumber = "021-555-003", IsActive = true, Cuisine = CuisineType.Serbian, ImageUrl = "https://example.com/kafana.jpg", ManagerId = -2L }
+            new { Id = -1L, Name = "Pizzeria Roma", Address = "Bulevar Oslobodjenja 1, Novi Sad", PhoneNumber = "021-555-001", IsActive = true, Cuisine = CuisineType.Italian, ImageUrl = "images/restaurants/roma.jpg",         ManagerId = -2L },
+            new { Id = -2L, Name = "Kineski Zid",   Address = "Zmaj Jovina 10, Novi Sad",         PhoneNumber = "021-555-002", IsActive = true, Cuisine = CuisineType.Chinese, ImageUrl = "images/restaurants/chinese_rest.jpg", ManagerId = -3L },
+            new { Id = -3L, Name = "Srpska Kafana", Address = "Dunavska 5, Novi Sad",             PhoneNumber = "021-555-003", IsActive = true, Cuisine = CuisineType.Serbian, ImageUrl = "images/restaurants/kafana.jpg",       ManagerId = -2L }
         );
 
         modelBuilder.Entity<Food>().HasData(
-            new { Id = -1L, Name = "Margherita",       Price = 800.00m,  Description = "Classic tomato and mozzarella pizza",    ImageUrl = "https://example.com/margherita.jpg",  RestaurantId = -1L },
-            new { Id = -2L, Name = "Pepperoni",        Price = 950.00m,  Description = "Pizza with pepperoni and mozzarella",    ImageUrl = "https://example.com/pepperoni.jpg",   RestaurantId = -1L },
-            new { Id = -3L, Name = "Tiramisu",         Price = 450.00m,  Description = "Traditional Italian dessert",            ImageUrl = "https://example.com/tiramisu.jpg",    RestaurantId = -1L },
-            new { Id = -4L, Name = "Kung Pao Chicken", Price = 700.00m,  Description = "Spicy stir-fried chicken with peanuts",  ImageUrl = "https://example.com/kungpao.jpg",     RestaurantId = -2L },
-            new { Id = -5L, Name = "Spring Rolls",     Price = 400.00m,  Description = "Crispy vegetable spring rolls",          ImageUrl = "https://example.com/springrolls.jpg", RestaurantId = -2L },
-            new { Id = -6L, Name = "Fried Rice",       Price = 550.00m,  Description = "Classic Chinese fried rice",             ImageUrl = "https://example.com/friedrice.jpg",   RestaurantId = -2L },
-            new { Id = -7L, Name = "Rostilj Mix",      Price = 1200.00m, Description = "Mixed grill platter with sides",         ImageUrl = "https://example.com/rostilj.jpg",     RestaurantId = -3L },
-            new { Id = -8L, Name = "Riblja Corba",     Price = 600.00m,  Description = "Traditional Serbian fish soup",          ImageUrl = "https://example.com/riblja.jpg",      RestaurantId = -3L },
-            new { Id = -9L, Name = "Gibanica",         Price = 350.00m,  Description = "Serbian cheese pie",                     ImageUrl = "https://example.com/gibanica.jpg",    RestaurantId = -3L }
+            new { Id = -1L, Name = "Margherita",       Price = 800.00m,  Description = "Classic tomato and mozzarella pizza",    ImageUrl = "images/foods/margarita.jpg",       RestaurantId = -1L },
+            new { Id = -2L, Name = "Pepperoni",        Price = 950.00m,  Description = "Pizza with pepperoni and mozzarella",    ImageUrl = "images/foods/peperoni.jpg",        RestaurantId = -1L },
+            new { Id = -3L, Name = "Tiramisu",         Price = 450.00m,  Description = "Traditional Italian dessert",            ImageUrl = "images/foods/tiramisu.jpg",        RestaurantId = -1L },
+            new { Id = -4L, Name = "Kung Pao Chicken", Price = 700.00m,  Description = "Spicy stir-fried chicken with peanuts",  ImageUrl = "images/foods/kung-pao-chicken.jpg", RestaurantId = -2L },
+            new { Id = -5L, Name = "Spring Rolls",     Price = 400.00m,  Description = "Crispy vegetable spring rolls",          ImageUrl = "images/foods/spring_roles.jpg",    RestaurantId = -2L },
+            new { Id = -6L, Name = "Fried Rice",       Price = 550.00m,  Description = "Classic Chinese fried rice",             ImageUrl = "images/foods/fried_rice.jpg",      RestaurantId = -2L },
+            new { Id = -7L, Name = "Rostilj Mix",      Price = 1200.00m, Description = "Mixed grill platter with sides",         ImageUrl = "images/foods/rostilj.jpg",         RestaurantId = -3L },
+            new { Id = -8L, Name = "Riblja Corba",     Price = 600.00m,  Description = "Traditional Serbian fish soup",          ImageUrl = "images/foods/riblja-corba.jpg",    RestaurantId = -3L },
+            new { Id = -9L, Name = "Gibanica",         Price = 350.00m,  Description = "Serbian cheese pie",                     ImageUrl = "images/foods/gibanica.jpg",        RestaurantId = -3L }
         );
 
         // OrderStatus stored as string (HasConversion<string>)
