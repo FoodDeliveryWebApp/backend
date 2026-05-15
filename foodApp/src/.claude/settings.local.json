@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\foodApp\\\\src\" -Recurse -Directory | Where-Object { $_.Name -match \"\\(Blog|Tours\\)\" } | Select-Object FullName)",
+      "Bash(xargs grep -l \"RegisterTourist\\\\|UserRole.Tourist\")",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\foodApp\\\\src\" -Directory -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"tourist|author|Tourist|Author\" } | ForEach-Object { $_.FullName })"
+    ]
+  }
+}
