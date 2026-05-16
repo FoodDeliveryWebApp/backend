@@ -25,7 +25,7 @@ namespace Explorer.API.Controllers
         public async Task<ActionResult> AddRating([FromBody] RestaurantRatingDto ratingDto)
         {
             // Optionally, override RatedByUserId from the authenticated user
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userIdClaim = User.FindFirstValue("id");
             if (!int.TryParse(userIdClaim, out var userId))
             {
                 return Unauthorized("Invalid user.");

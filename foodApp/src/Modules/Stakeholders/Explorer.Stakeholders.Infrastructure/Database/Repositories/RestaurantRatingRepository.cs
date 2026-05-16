@@ -45,7 +45,9 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         public async Task<List<RestaurantRating>> GetByRestaurantIdAsync(int restaurantId)
         {
             return await _context.RestaurantRatings
-                .Where(r => r.Restaurant.Id == restaurantId)
+                .Include(r => r.RatedBy)
+                .Include(r => r.Restaurant)
+                .Where(r => r.Restaurant.Id == restaurantId && !r.isDeleted)
                 .ToListAsync();
         }
     }
