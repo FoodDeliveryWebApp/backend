@@ -54,7 +54,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             return apps.Select(ToDto).ToList();
         }
 
-        public async Task<RestaurantApplicationDto> ProcessApplicationAsync(long applicationId, ProcessApplicationDto decision)
+        public async Task<RestaurantApplicationDto> ProcessApplicationAsync(int applicationId, ProcessApplicationDto decision)
         {
             var application = await _applicationRepository.GetByIdAsync(applicationId);
             if (application == null)

@@ -7,7 +7,7 @@ namespace Explorer.Stakeholders.API.Public
     public interface IRatingReportService
     {
         Task<RatingReportDto> CreateReportAsync(RatingReportDto dto);
-        Task<RatingReportDto> UpdateReportStatusAsync(long reportId, string newStatus);
+        Task<RatingReportDto> UpdateReportStatusAsync(int reportId, string newStatus);
         Task<List<RatingReportDto>> GetAllReportsAsync();
     }
 }

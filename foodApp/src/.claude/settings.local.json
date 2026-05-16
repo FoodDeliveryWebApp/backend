@@ -4,7 +4,11 @@
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\foodApp\\\\src\" -Recurse -Directory | Where-Object { $_.Name -match \"\\(Blog|Tours\\)\" } | Select-Object FullName)",
       "Bash(xargs grep -l \"RegisterTourist\\\\|UserRole.Tourist\")",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\foodApp\\\\src\" -Directory -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"tourist|author|Tourist|Author\" } | ForEach-Object { $_.FullName })",
-      "Bash(dotnet build *)"
+      "Bash(dotnet build *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\backend\\\\foodApp\\\\src\" -Directory)",
+      "Bash(Select-Object -First 20)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\" -Recurse -Directory | Select-Object -First 50 | ForEach-Object { $_.FullName -replace [regex]::Escape\\(\"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\"\\), \"\" })",
+      "PowerShell(head *)"
     ]
   }
 }

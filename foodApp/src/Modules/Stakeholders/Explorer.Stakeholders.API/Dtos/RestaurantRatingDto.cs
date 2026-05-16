@@ -10,8 +10,8 @@ namespace Explorer.Stakeholders.API.Dtos
     {
         public int Rating { get; set; }
         public string Comment { get; set; }
-        public long RatedByUserId { get; set; }
-        public long RestaurantId { get; set; }
+        public int RatedByUserId { get; set; }
+        public int RestaurantId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

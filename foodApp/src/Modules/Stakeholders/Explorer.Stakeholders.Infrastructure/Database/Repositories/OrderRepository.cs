@@ -34,7 +34,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Order> GetOrderByIdAsync(long orderId)
+        public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             // Find order by ID, including its related entities
             return await _context.Orders

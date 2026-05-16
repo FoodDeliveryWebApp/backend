@@ -5,8 +5,8 @@ namespace Explorer.Stakeholders.API.Dtos
 {
     public class OrderDto
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
         public List<FoodDto> Foods { get; set; }
         public DateTime OrderTime { get; set; }
         public string Status { get; set; } // Jedan status za sve

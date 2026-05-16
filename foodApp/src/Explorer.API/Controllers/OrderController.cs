@@ -31,7 +31,7 @@ namespace Explorer.API.Controllers
 
         [HttpGet("worker/{workerId}")]
         [Authorize(Roles = "worker")]
-        public async Task<ActionResult<List<OrderDto>>> GetAllOrdersForWorker(long workerId)
+        public async Task<ActionResult<List<OrderDto>>> GetAllOrdersForWorker(int workerId)
         {
             var orders = await _orderService.GetAllOrdersForWorker(workerId);
 
@@ -45,7 +45,7 @@ namespace Explorer.API.Controllers
 
         [HttpGet("guest/{guestId}")]
         [Authorize(Roles = "guest")]
-        public async Task<ActionResult<List<OrderDto>>> GetAllOrdersForGuest(long guestId)
+        public async Task<ActionResult<List<OrderDto>>> GetAllOrdersForGuest(int guestId)
         {
             var orders = await _orderService.GetAllOrdersForGuest(guestId);
 
@@ -60,7 +60,7 @@ namespace Explorer.API.Controllers
 
         [HttpPut("order/{orderId}/status")]
         [Authorize(Roles = "worker,guest,deliveryman")]
-        public async Task<ActionResult<OrderDto>> UpdateOrderStatus(long orderId, [FromBody] string newStatus)
+        public async Task<ActionResult<OrderDto>> UpdateOrderStatus(int orderId, [FromBody] string newStatus)
         {
             // JWT stores roles in lowercase (administrator, manager, worker, deliveryman, guest)
             var userRole = User.FindFirstValue(ClaimTypes.Role);
@@ -111,7 +111,7 @@ namespace Explorer.API.Controllers
 
         [HttpGet("manager/{managerId}/earnings")]
         [Authorize(Roles = "manager")]
-        public async Task<ActionResult<object>> GetAllOrdersAndEarningsForManager(long managerId)
+        public async Task<ActionResult<object>> GetAllOrdersAndEarningsForManager(int managerId)
         {
             var result = await _orderService.GetAllOrdersAndEarningsForManager(managerId);
 

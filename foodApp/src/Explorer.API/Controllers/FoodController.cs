@@ -16,7 +16,7 @@ namespace Explorer.API.Controllers
         }
 
         [HttpGet("restaurant/{restaurantId}")]
-        public async Task<ActionResult<IEnumerable<FoodDto>>> GetAllFoodByRestaurant(long restaurantId)
+        public async Task<ActionResult<IEnumerable<FoodDto>>> GetAllFoodByRestaurant(int restaurantId)
         {
             var result = await _foodService.GetAllFoodByRestaurantAsync(restaurantId);
             return CreateResponse(result);

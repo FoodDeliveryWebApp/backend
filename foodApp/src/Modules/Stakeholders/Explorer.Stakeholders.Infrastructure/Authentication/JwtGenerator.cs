@@ -15,7 +15,7 @@ public class JwtGenerator : ITokenGenerator
     private readonly string _issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "explorer";
     private readonly string _audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "explorer-front.com";
 
-    public Result<AuthenticationTokensDto> GenerateAccessToken(User user, long personId)
+    public Result<AuthenticationTokensDto> GenerateAccessToken(User user, int personId)
     {
         var authenticationResponse = new AuthenticationTokensDto();
 

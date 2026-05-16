@@ -25,7 +25,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<RestaurantRating> GetByOrderIdAsync(long orderId)
+        public async Task<RestaurantRating> GetByOrderIdAsync(int orderId)
         {
             return await _context.RestaurantRatings
                 .Include(r => r.Restaurant)
@@ -42,7 +42,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
 
 
         // Get all ratings for a specific restaurant by its ID
-        public async Task<List<RestaurantRating>> GetByRestaurantIdAsync(long restaurantId)
+        public async Task<List<RestaurantRating>> GetByRestaurantIdAsync(int restaurantId)
         {
             return await _context.RestaurantRatings
                 .Where(r => r.Restaurant.Id == restaurantId)

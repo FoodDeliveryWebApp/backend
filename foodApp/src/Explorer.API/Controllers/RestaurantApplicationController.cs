@@ -52,7 +52,7 @@ namespace Explorer.API.Controllers
         // Admin approves or rejects an application
         [HttpPut("{id}/process")]
         [Authorize(Roles = "Administrator")]
-        public async Task<ActionResult<RestaurantApplicationDto>> ProcessApplication(long id, [FromBody] ProcessApplicationDto decision)
+        public async Task<ActionResult<RestaurantApplicationDto>> ProcessApplication(int id, [FromBody] ProcessApplicationDto decision)
         {
             try
             {

@@ -61,7 +61,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             return Result.Ok();
         }
 
-        public async Task<List<RestaurantRatingDto>> GetRatingsForRestaurantAsync(long restaurantId)
+        public async Task<List<RestaurantRatingDto>> GetRatingsForRestaurantAsync(int restaurantId)
         {
             // Fetch all ratings for the restaurant
             var ratings = await _ratingRepo.GetByRestaurantIdAsync(restaurantId);

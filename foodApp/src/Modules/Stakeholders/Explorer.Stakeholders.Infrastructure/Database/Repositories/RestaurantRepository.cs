@@ -27,7 +27,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Restaurant> GetRestaurantById(long restaurantId)
+        public async Task<Restaurant> GetRestaurantById(int restaurantId)
         {
             return await _context.Restaurants
                 .Include(r => r.Manager)
@@ -43,7 +43,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             return restaurant;
         }
 
-        public async Task<Restaurant?> GetByIdAsync(long id)
+        public async Task<Restaurant?> GetByIdAsync(int id)
         {
             return await _context.Restaurants
                 .Include(r => r.Manager)

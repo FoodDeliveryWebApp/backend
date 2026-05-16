@@ -9,9 +9,9 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     public interface IRestaurantRatingRepository
     {
         Task AddAsync(RestaurantRating rating);
-        Task<List<RestaurantRating>> GetByRestaurantIdAsync(long restaurantId);
+        Task<List<RestaurantRating>> GetByRestaurantIdAsync(int restaurantId);
 
-        Task<RestaurantRating> GetByOrderIdAsync(long orderId);
+        Task<RestaurantRating> GetByOrderIdAsync(int orderId);
         Task UpdateAsync(RestaurantRating rating);
 
     }

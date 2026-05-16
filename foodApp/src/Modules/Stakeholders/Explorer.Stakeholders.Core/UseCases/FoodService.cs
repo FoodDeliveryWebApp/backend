@@ -22,7 +22,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             _foodRepository = foodRepository;
         }
 
-        public async Task<Result<IEnumerable<FoodDto>>> GetAllFoodByRestaurantAsync(long restaurantId)
+        public async Task<Result<IEnumerable<FoodDto>>> GetAllFoodByRestaurantAsync(int restaurantId)
         {
             var foods = await _foodRepository.GetAllFoodByRestaurantAsync(restaurantId);
             if (foods == null || !foods.Any())

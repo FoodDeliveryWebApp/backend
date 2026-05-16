@@ -29,7 +29,7 @@ namespace Explorer.API.Controllers
         // ➤ Administrator menja status prijave (pregled prijave)
         [HttpPut("{reportId}/status")]
         [Authorize(Roles = "Administrator")]
-        public async Task<ActionResult<RatingReportDto>> UpdateReportStatus(long reportId, [FromBody] string newStatus)
+        public async Task<ActionResult<RatingReportDto>> UpdateReportStatus(int reportId, [FromBody] string newStatus)
         {
             var updatedReport = await _ratingReportService.UpdateReportStatusAsync(reportId, newStatus);
             return Ok(updatedReport);

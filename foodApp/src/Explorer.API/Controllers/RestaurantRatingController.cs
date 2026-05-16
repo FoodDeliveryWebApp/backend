@@ -26,7 +26,7 @@ namespace Explorer.API.Controllers
         {
             // Optionally, override RatedByUserId from the authenticated user
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!long.TryParse(userIdClaim, out var userId))
+            if (!int.TryParse(userIdClaim, out var userId))
             {
                 return Unauthorized("Invalid user.");
             }
@@ -47,7 +47,7 @@ namespace Explorer.API.Controllers
 
         [HttpGet("restaurant/{restaurantId}")]
         [Authorize(Roles = "Manager")]  // Only Manager can view ratings
-        public async Task<ActionResult<List<RestaurantRatingDto>>> GetRatingsForRestaurant(long restaurantId)
+        public async Task<ActionResult<List<RestaurantRatingDto>>> GetRatingsForRestaurant(int restaurantId)
         {
             // Pretpostavljamo da servis ima metodu za dobijanje svih ocena restorana
             var ratings = await _ratingService.GetRatingsForRestaurantAsync(restaurantId);

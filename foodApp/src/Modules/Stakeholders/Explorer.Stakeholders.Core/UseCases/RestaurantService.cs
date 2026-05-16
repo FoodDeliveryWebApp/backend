@@ -25,7 +25,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             _personRepository = personRepository;
         }
 
-        public async Task<Result> AddWorkerToRestaurantAsync(long restaurantId, UserDto workerDto)
+        public async Task<Result> AddWorkerToRestaurantAsync(int restaurantId, UserDto workerDto)
         {
             // Fetch the restaurant
             var restaurant = await _restaurantRepository.GetByIdAsync(restaurantId);
@@ -90,7 +90,13 @@ namespace Explorer.Stakeholders.Core.UseCases
                 PhoneNumber = r.PhoneNumber,
                 IsActive = r.IsActive,
                 Cuisine = r.GetCuisineTypeName(),
-                ImageUrl = r.ImageUrl
+                ImageUrl = r.ImageUrl,
+                Manager = r.Manager == null ? null : new UserDto
+                {
+                    Username = r.Manager.Username,
+                    Role = r.Manager.Role.ToString(),
+                    IsActive = r.Manager.IsActive
+                }
             });
 
             return Result.Ok(result);

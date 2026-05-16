@@ -47,7 +47,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             return ToDto(created);
         }
 
-        public async Task<RatingReportDto> UpdateReportStatusAsync(long reportId, string newStatus)
+        public async Task<RatingReportDto> UpdateReportStatusAsync(int reportId, string newStatus)
         {
             var report = await _ratingReportRepository.GetByIdAsync(reportId);
             if (report == null)

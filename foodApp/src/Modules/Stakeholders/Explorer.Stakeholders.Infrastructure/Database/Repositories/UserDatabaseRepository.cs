@@ -30,7 +30,7 @@ public class UserDatabaseRepository : IUserRepository
         return user;
     }
 
-    public long GetPersonId(long userId)
+    public int GetPersonId(int userId)
     {
         var person = _dbContext.People.FirstOrDefault(i => i.UserId == userId);
         if (person == null) throw new KeyNotFoundException("Not found.");
@@ -46,7 +46,7 @@ public class UserDatabaseRepository : IUserRepository
     }
 
     // Asynchronous version of GetById
-    public async Task<User?> GetByIdAsync(long id)
+    public async Task<User?> GetByIdAsync(int id)
     {
         return await _dbContext.Users
             .FirstOrDefaultAsync(user => user.Id == id);

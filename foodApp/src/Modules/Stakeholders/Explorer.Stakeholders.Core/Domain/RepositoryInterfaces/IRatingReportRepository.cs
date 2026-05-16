@@ -7,7 +7,7 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     public interface IRatingReportRepository
     {
         Task<RatingReport> CreateAsync(RatingReport report);
-        Task<RatingReport> GetByIdAsync(long id);
+        Task<RatingReport> GetByIdAsync(int id);
         Task<List<RatingReport>> GetAllAsync();
         Task<RatingReport> UpdateAsync(RatingReport report);
     }

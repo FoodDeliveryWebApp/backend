@@ -20,7 +20,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             return application;
         }
 
-        public async Task<RestaurantApplication?> GetByIdAsync(long id)
+        public async Task<RestaurantApplication?> GetByIdAsync(int id)
         {
             return await _context.RestaurantApplications.FirstOrDefaultAsync(a => a.Id == id);
         }

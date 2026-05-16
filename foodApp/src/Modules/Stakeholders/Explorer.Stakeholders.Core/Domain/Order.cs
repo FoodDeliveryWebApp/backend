@@ -24,7 +24,7 @@ namespace Explorer.Stakeholders.Core.Domain
 
     public class Order : Entity
     {
-        public long UserId { get; private set; }
+        public int UserId { get; private set; }
         public List<Food> Foods { get; private set; }
         public DateTime OrderTime { get; private set; }
         public OrderStatus Status { get;  set; }
@@ -33,7 +33,7 @@ namespace Explorer.Stakeholders.Core.Domain
 
         protected Order() { }
 
-        public Order(long userId, List<Food> foods, OrderStatus status, string note = "")
+        public Order(int userId, List<Food> foods, OrderStatus status, string note = "")
         {
             UserId = userId;
             Foods = foods ?? throw new ArgumentNullException(nameof(foods));

@@ -42,7 +42,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             Note = order.Note
         };
 
-        public async Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(long managerId)
+        public async Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(int managerId)
         {
             var orders = await _orderRepository.GetAllOrdersAsync();
             var restaurants = await _restaurantRepository.GetAllRestaurantsAsync();
@@ -93,7 +93,7 @@ namespace Explorer.Stakeholders.Core.UseCases
         }
 
 
-        public async Task<List<OrderDto>> GetAllOrdersForWorker(long workerId)
+        public async Task<List<OrderDto>> GetAllOrdersForWorker(int workerId)
         {
             // Step 1: Retrieve all orders
             var orders = await _orderRepository.GetAllOrdersAsync(); // Assuming this method exists and fetches all orders.
@@ -118,7 +118,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             return filteredOrders;
         }
 
-        public async Task<List<OrderDto>> GetAllOrdersForGuest(long guestId)
+        public async Task<List<OrderDto>> GetAllOrdersForGuest(int guestId)
         {
             // Step 1: Retrieve all orders
             var orders = await _orderRepository.GetAllOrdersAsync(); // Assuming this method exists and fetches all orders.
@@ -140,7 +140,7 @@ namespace Explorer.Stakeholders.Core.UseCases
         }
 
 
-        public async Task<OrderDto> UpdateOrderStatus(long orderId, string newStatusString)
+        public async Task<OrderDto> UpdateOrderStatus(int orderId, string newStatusString)
         {
             // Step 1: Fetch the order by ID
             var order = await _orderRepository.GetOrderByIdAsync(orderId);

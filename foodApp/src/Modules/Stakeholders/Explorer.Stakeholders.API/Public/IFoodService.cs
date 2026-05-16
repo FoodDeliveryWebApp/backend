@@ -10,6 +10,6 @@ namespace Explorer.Stakeholders.API.Public
 {
     public interface IFoodService
     {
-        Task<Result<IEnumerable<FoodDto>>> GetAllFoodByRestaurantAsync(long restaurantId);
+        Task<Result<IEnumerable<FoodDto>>> GetAllFoodByRestaurantAsync(int restaurantId);
     }
 }

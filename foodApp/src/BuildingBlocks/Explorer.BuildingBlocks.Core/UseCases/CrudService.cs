@@ -24,7 +24,7 @@ public abstract class CrudService<TDto, TDomain> : BaseService<TDto, TDomain> wh
         return MapToDto(result);
     }
 
-    public Result<TDto> Get(long id)
+    public Result<TDto> Get(int id)
     {
         try
         {
@@ -67,7 +67,7 @@ public abstract class CrudService<TDto, TDomain> : BaseService<TDto, TDomain> wh
         }
     }
 
-    public virtual Result Delete(long id)
+    public virtual Result Delete(int id)
     {
         try
         {

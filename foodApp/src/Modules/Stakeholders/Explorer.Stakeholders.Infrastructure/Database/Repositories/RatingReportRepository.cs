@@ -22,7 +22,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             return report;
         }
 
-        public async Task<RatingReport> GetByIdAsync(long id)
+        public async Task<RatingReport> GetByIdAsync(int id)
         {
             return await _context.RatingReports
                 .Include(r => r.Order)

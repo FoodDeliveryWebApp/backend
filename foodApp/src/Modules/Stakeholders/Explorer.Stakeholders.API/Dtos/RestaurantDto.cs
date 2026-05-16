@@ -8,7 +8,7 @@ namespace Explorer.Stakeholders.API.Dtos
 {
     public class RestaurantDto
     {
-        public long Id { get; set; }  // Id restorana
+        public int Id { get; set; }  // Id restorana
         public string Name { get; set; }  // Naziv restorana
         public string Address { get; set; }  // Adresa restorana
         public string PhoneNumber { get; set; }  // Broj telefona restorana

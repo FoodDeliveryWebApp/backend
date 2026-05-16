@@ -9,10 +9,10 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
    public interface IRestaurantRepository
     {
         Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync();
-        Task<Restaurant> GetRestaurantById(long restaurantId);
+        Task<Restaurant> GetRestaurantById(int restaurantId);
         Task<Restaurant> Create(Restaurant restaurant);
 
-        Task<Restaurant?> GetByIdAsync(long id);
+        Task<Restaurant?> GetByIdAsync(int id);
         Task UpdateAsync(Restaurant restaurant);
 
     }

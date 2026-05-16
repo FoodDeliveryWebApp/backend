@@ -9,12 +9,12 @@ namespace Explorer.Stakeholders.API.Public
     public interface IOrderService
     {
         Task<OrderDto> CreateOrderAsync(OrderDto orderDto);
-        Task<List<OrderDto>> GetAllOrdersForWorker(long workerId);
+        Task<List<OrderDto>> GetAllOrdersForWorker(int workerId);
         
-        Task<List<OrderDto>> GetAllOrdersForGuest(long workerId);
-        Task<OrderDto> UpdateOrderStatus(long orderId, string newStatus);
+        Task<List<OrderDto>> GetAllOrdersForGuest(int workerId);
+        Task<OrderDto> UpdateOrderStatus(int orderId, string newStatus);
 
-        Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(long managerId);
+        Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(int managerId);
         Task<List<OrderDto>> GetOrdersForDeliveryAsync();
     }
 }
