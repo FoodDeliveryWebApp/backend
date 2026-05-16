@@ -9,6 +9,6 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
     public interface IFoodRepository
     {
         Task<IEnumerable<Food>> GetAllFoodByRestaurantAsync(long restaurantId);
-      
+        Task<List<Food>> GetByIdsAsync(IEnumerable<long> ids);
     }
 }

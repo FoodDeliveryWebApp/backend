@@ -14,11 +14,13 @@ namespace Explorer.Stakeholders.Core.UseCases
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IRestaurantRepository _restaurantRepository;
+        private readonly IFoodRepository _foodRepository;
 
-        public OrderService(IOrderRepository orderRepository, IRestaurantRepository restaurantRepository)
+        public OrderService(IOrderRepository orderRepository, IRestaurantRepository restaurantRepository, IFoodRepository foodRepository)
         {
             _orderRepository = orderRepository;
             _restaurantRepository = restaurantRepository;
+            _foodRepository = foodRepository;
         }
 
         private static OrderDto MapToDto(Order order) => new OrderDto
@@ -73,14 +75,16 @@ namespace Explorer.Stakeholders.Core.UseCases
 
         public async Task<OrderDto> CreateOrderAsync(OrderDto orderDto)
         {
-            // Convert DTO to domain model
-            var foods = orderDto.Foods.Select(f =>
-                new Food(f.Name, f.Price, f.Description, f.ImageUrl, f.RestaurantId)).ToList();
+            var foodIds = orderDto.Foods.Select(f => f.Id);
+            var foods = await _foodRepository.GetByIdsAsync(foodIds);
+
+            if (foods.Count == 0)
+                throw new ArgumentException("None of the requested food items were found.");
 
             var order = new Order(
                 userId: orderDto.UserId,
                 foods: foods,
-                status: Enum.Parse<OrderStatus>(orderDto.Status),
+                status: OrderStatus.Pending,
                 note: orderDto.Note
             );
 

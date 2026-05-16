@@ -21,9 +21,15 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         // Implementing the GetAllFoodByRestaurantAsync method
         public async Task<IEnumerable<Food>> GetAllFoodByRestaurantAsync(long restaurantId)
         {
-            // Query to get all food items for a specific restaurant (restaurantId)
             return await _dbContext.Foods
                 .Where(food => food.RestaurantId == restaurantId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Food>> GetByIdsAsync(IEnumerable<long> ids)
+        {
+            return await _dbContext.Foods
+                .Where(f => ids.Contains(f.Id))
                 .ToListAsync();
         }
     }

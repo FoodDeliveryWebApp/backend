@@ -46,7 +46,7 @@ namespace Explorer.Stakeholders.Core.Domain
 
         private void Validate()
         {
-            if (UserId <= 0) throw new ArgumentException("Invalid user ID.");
+            if (UserId == 0) throw new ArgumentException("Invalid user ID.");
             if (Foods == null || Foods.Count == 0) throw new ArgumentException("Order must contain at least one food item.");
             if (Note.Length > 500) throw new ArgumentException("Note is too long (max 500 characters).");
         }

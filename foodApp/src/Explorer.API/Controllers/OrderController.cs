@@ -21,7 +21,7 @@ namespace Explorer.API.Controllers
 
         // POST api/orders
         [HttpPost]
-        [Authorize(Roles = "Guest")]
+        [Authorize(Roles = "guest")]
         public async Task<ActionResult<OrderDto>> CreateOrder([FromBody] OrderDto orderDto)
         {
             var result = await _orderService.CreateOrderAsync(orderDto);
@@ -30,7 +30,7 @@ namespace Explorer.API.Controllers
 
 
         [HttpGet("worker/{workerId}")]
-        [Authorize(Roles = "Worker")]
+        [Authorize(Roles = "worker")]
         public async Task<ActionResult<List<OrderDto>>> GetAllOrdersForWorker(long workerId)
         {
             var orders = await _orderService.GetAllOrdersForWorker(workerId);
@@ -44,7 +44,7 @@ namespace Explorer.API.Controllers
         }
 
         [HttpGet("guest/{guestId}")]
-        [Authorize(Roles = "Guest")]
+        [Authorize(Roles = "guest")]
         public async Task<ActionResult<List<OrderDto>>> GetAllOrdersForGuest(long guestId)
         {
             var orders = await _orderService.GetAllOrdersForGuest(guestId);
@@ -59,7 +59,7 @@ namespace Explorer.API.Controllers
 
 
         [HttpPut("order/{orderId}/status")]
-        [Authorize(Roles = "Worker,Guest,DeliveryMan")]
+        [Authorize(Roles = "worker,guest,deliveryman")]
         public async Task<ActionResult<OrderDto>> UpdateOrderStatus(long orderId, [FromBody] string newStatus)
         {
             // JWT stores roles in lowercase (administrator, manager, worker, deliveryman, guest)
@@ -100,7 +100,7 @@ namespace Explorer.API.Controllers
 
 
         [HttpGet("delivery")]
-        [Authorize(Roles = "DeliveryMan")]
+        [Authorize(Roles = "deliveryman")]
         public async Task<ActionResult<List<OrderDto>>> GetOrdersForDelivery()
         {
             var orders = await _orderService.GetOrdersForDeliveryAsync();
@@ -110,7 +110,7 @@ namespace Explorer.API.Controllers
         }
 
         [HttpGet("manager/{managerId}/earnings")]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<object>> GetAllOrdersAndEarningsForManager(long managerId)
         {
             var result = await _orderService.GetAllOrdersAndEarningsForManager(managerId);
