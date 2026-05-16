@@ -21,7 +21,7 @@ namespace Explorer.API.Controllers
 
         // POST api/restaurant-ratings
         [HttpPost]
-        [Authorize(Roles = "Guest")]  // Only Guest users can add ratings
+        [Authorize(Roles = "guest")]  // Only Guest users can add ratings
         public async Task<ActionResult> AddRating([FromBody] RestaurantRatingDto ratingDto)
         {
             // Optionally, override RatedByUserId from the authenticated user
@@ -46,7 +46,7 @@ namespace Explorer.API.Controllers
 
 
         [HttpGet("restaurant/{restaurantId}")]
-        [Authorize(Roles = "Manager")]  // Only Manager can view ratings
+        [Authorize(Roles = "manager")]  // Only Manager can view ratings
         public async Task<ActionResult<List<RestaurantRatingDto>>> GetRatingsForRestaurant(int restaurantId)
         {
             // Pretpostavljamo da servis ima metodu za dobijanje svih ocena restorana

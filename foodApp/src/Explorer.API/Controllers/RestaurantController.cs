@@ -25,7 +25,7 @@ namespace Explorer.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<ActionResult<RestaurantDto>> AddRestaurant([FromBody] RestaurantDto restaurantDto)
         {
             var result = await _restaurantService.AddRestaurantAsync(restaurantDto);
@@ -35,7 +35,7 @@ namespace Explorer.API.Controllers
 
         // Add Worker to a Restaurant
         [HttpPost("{restaurantId}/workers")]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult> AddWorkerToRestaurant(int restaurantId, [FromBody] UserDto workerDto)
         {
             var result = await _restaurantService.AddWorkerToRestaurantAsync(restaurantId, workerDto);
@@ -44,7 +44,7 @@ namespace Explorer.API.Controllers
 
         // Add Food to a Restaurant
         [HttpPost("{restaurantId}/foods")]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult> AddFoodToRestaurant(int restaurantId, [FromBody] FoodDto foodDto)
         {
             foodDto.RestaurantId = restaurantId;

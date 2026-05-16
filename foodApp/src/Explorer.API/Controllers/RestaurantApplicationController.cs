@@ -33,7 +33,7 @@ namespace Explorer.API.Controllers
 
         // Admin sees all applications
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<ActionResult<List<RestaurantApplicationDto>>> GetAllApplications()
         {
             var result = await _service.GetAllApplicationsAsync();
@@ -42,7 +42,7 @@ namespace Explorer.API.Controllers
 
         // Admin sees only pending applications
         [HttpGet("pending")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<ActionResult<List<RestaurantApplicationDto>>> GetPendingApplications()
         {
             var result = await _service.GetPendingApplicationsAsync();
@@ -51,7 +51,7 @@ namespace Explorer.API.Controllers
 
         // Admin approves or rejects an application
         [HttpPut("{id}/process")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<ActionResult<RestaurantApplicationDto>> ProcessApplication(int id, [FromBody] ProcessApplicationDto decision)
         {
             try

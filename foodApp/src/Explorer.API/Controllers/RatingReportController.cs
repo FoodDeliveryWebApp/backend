@@ -19,7 +19,7 @@ namespace Explorer.API.Controllers
 
         // ➤ Kreira prijavu za neku ocenu (menadžer)
         [HttpPost]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<RatingReportDto>> CreateReport([FromBody] RatingReportDto dto)
         {
             var report = await _ratingReportService.CreateReportAsync(dto);
@@ -28,7 +28,7 @@ namespace Explorer.API.Controllers
 
         // ➤ Administrator menja status prijave (pregled prijave)
         [HttpPut("{reportId}/status")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<ActionResult<RatingReportDto>> UpdateReportStatus(int reportId, [FromBody] string newStatus)
         {
             var updatedReport = await _ratingReportService.UpdateReportStatusAsync(reportId, newStatus);
@@ -37,7 +37,7 @@ namespace Explorer.API.Controllers
 
         // ➤ (Opcionalno) Pregled svih prijava
         [HttpGet]
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Roles = "administrator,manager")]
         public async Task<ActionResult<List<RatingReportDto>>> GetAllReports()
         {
             var reports = await _ratingReportService.GetAllReportsAsync();
