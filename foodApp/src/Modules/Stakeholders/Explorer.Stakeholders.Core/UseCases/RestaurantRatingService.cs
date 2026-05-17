@@ -78,5 +78,14 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             return ratingDtos;
         }
+
+        public async Task<double?> GetAverageRatingAsync(int restaurantId)
+        {
+            var ratings = await _ratingRepo.GetByRestaurantIdAsync(restaurantId);
+            if (ratings == null || ratings.Count == 0)
+                return null;
+
+            return ratings.Average(r => (double)r.Rating);
+        }
     }
 }

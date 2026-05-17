@@ -60,7 +60,12 @@ namespace Explorer.API.Controllers
             return Ok(ratings);
         }
 
-
-
+        [HttpGet("restaurant/{restaurantId}/average")]
+        [AllowAnonymous]
+        public async Task<ActionResult<double?>> GetAverageRating(int restaurantId)
+        {
+            var average = await _ratingService.GetAverageRatingAsync(restaurantId);
+            return Ok(average);
+        }
     }
 }

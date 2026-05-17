@@ -12,5 +12,6 @@ namespace Explorer.Stakeholders.API.Public
     {
         Task<Result> AddRatingAsync(RestaurantRatingDto dto);
         Task<List<RestaurantRatingDto>> GetRatingsForRestaurantAsync(int restaurantId);
+        Task<double?> GetAverageRatingAsync(int restaurantId);
     }
 }
