@@ -23,6 +23,22 @@ namespace Explorer.API.Controllers
             return CreateResponse(result);
         }
 
+        [HttpPut("{foodId}")]
+        [Authorize(Roles = "manager")]
+        public async Task<ActionResult> UpdateFood(int foodId, [FromBody] FoodDto dto)
+        {
+            var result = await _foodService.UpdateFoodAsync(foodId, dto);
+            return CreateResponse(result);
+        }
+
+        [HttpDelete("{foodId}")]
+        [Authorize(Roles = "manager")]
+        public async Task<ActionResult> RemoveFood(int foodId)
+        {
+            var result = await _foodService.RemoveFoodAsync(foodId);
+            return CreateResponse(result);
+        }
+
         [HttpPost("upload-image")]
         [Authorize(Roles = "manager")]
         public async Task<ActionResult<string>> UploadImage(IFormFile image)

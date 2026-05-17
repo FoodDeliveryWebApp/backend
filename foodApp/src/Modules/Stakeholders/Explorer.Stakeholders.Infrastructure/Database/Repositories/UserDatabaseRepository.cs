@@ -45,10 +45,20 @@ public class UserDatabaseRepository : IUserRepository
         return user;
     }
 
-    // Asynchronous version of GetById
     public async Task<User?> GetByIdAsync(int id)
     {
         return await _dbContext.Users
             .FirstOrDefaultAsync(user => user.Id == id);
+    }
+
+    public async Task UpdateAsync(User user)
+    {
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public Person? GetPersonByUserId(int userId)
+    {
+        return _dbContext.People.FirstOrDefault(p => p.UserId == userId);
     }
 }

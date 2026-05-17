@@ -32,5 +32,24 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
                 .Where(f => ids.Contains(f.Id))
                 .ToListAsync();
         }
+
+        public async Task<Food?> GetByIdAsync(int id)
+        {
+            return await _dbContext.Foods.FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        public async Task UpdateAsync(Food food)
+        {
+            _dbContext.Foods.Update(food);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var food = await _dbContext.Foods.FindAsync(id);
+            if (food == null) return;
+            _dbContext.Foods.Remove(food);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

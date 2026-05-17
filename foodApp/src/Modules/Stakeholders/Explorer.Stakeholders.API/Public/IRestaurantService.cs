@@ -14,8 +14,8 @@ namespace Explorer.Stakeholders.API.Public
         Task<RestaurantDto> AddRestaurantAsync(RestaurantDto dto);
         Task<Result> AddWorkerToRestaurantAsync(int restaurantId, UserDto workerDto);
         Task<Result> AddFoodToRestaurantAsync(FoodDto foodDto);
-
-
-
+        Task<Result<IEnumerable<UserDto>>> GetWorkersAsync(int restaurantId);
+        Task<Result> RemoveWorkerAsync(int restaurantId, int workerId);
+        Task<Result> UpdateWorkerAsync(int restaurantId, int workerId, UserDto dto);
     }
 }

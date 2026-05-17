@@ -52,7 +52,28 @@ namespace Explorer.API.Controllers
             return CreateResponse(result);
         }
 
+        [HttpGet("{restaurantId}/workers")]
+        [Authorize(Roles = "manager")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetWorkers(int restaurantId)
+        {
+            var result = await _restaurantService.GetWorkersAsync(restaurantId);
+            return CreateResponse(result);
+        }
 
+        [HttpDelete("{restaurantId}/workers/{workerId}")]
+        [Authorize(Roles = "manager")]
+        public async Task<ActionResult> RemoveWorker(int restaurantId, int workerId)
+        {
+            var result = await _restaurantService.RemoveWorkerAsync(restaurantId, workerId);
+            return CreateResponse(result);
+        }
 
+        [HttpPut("{restaurantId}/workers/{workerId}")]
+        [Authorize(Roles = "manager")]
+        public async Task<ActionResult> UpdateWorker(int restaurantId, int workerId, [FromBody] UserDto dto)
+        {
+            var result = await _restaurantService.UpdateWorkerAsync(restaurantId, workerId, dto);
+            return CreateResponse(result);
+        }
     }
 }

@@ -6,9 +6,9 @@ namespace Explorer.Stakeholders.Core.Domain;
 public class Person : Entity
 {
     public int UserId { get; init; }
-    public string Name { get; init; }
-    public string Surname { get; init; }
-    public string Email { get; init; }
+    public string Name { get; set; }
+    public string Surname { get; set; }
+    public string Email { get; set; }
 
     public Person(int userId, string name, string surname, string email)
     {

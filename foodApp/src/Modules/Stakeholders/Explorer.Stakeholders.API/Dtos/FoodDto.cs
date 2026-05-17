@@ -8,11 +8,11 @@ namespace Explorer.Stakeholders.API.Dtos
 {
     public class FoodDto
     {
-        public int Id { get; set; }  // Id objekta
-        public string Name { get; set; }  // Naziv hrane
-        public decimal Price { get; set; }  // Cena hrane
-        public string Description { get; set; }  // Opis hrane
-        public string ImageUrl { get; set; }  // URL slike hrane
-        public int RestaurantId { get; set; }  // ID restorana kome hrana pripada
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public decimal Price { get; set; }
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public int RestaurantId { get; set; }
     }
 }

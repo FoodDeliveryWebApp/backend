@@ -40,5 +40,26 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             return Result.Ok(result);
         }
+
+        public async Task<Result> UpdateFoodAsync(int foodId, FoodDto dto)
+        {
+            var food = await _foodRepository.GetByIdAsync(foodId);
+            if (food == null) return Result.Fail("Food item not found.");
+
+            food.Update(dto.Name!, dto.Price, dto.Description!, dto.ImageUrl!);
+            await _foodRepository.UpdateAsync(food);
+
+            return Result.Ok();
+        }
+
+        public async Task<Result> RemoveFoodAsync(int foodId)
+        {
+            var food = await _foodRepository.GetByIdAsync(foodId);
+            if (food == null) return Result.Fail("Food item not found.");
+
+            await _foodRepository.DeleteAsync(foodId);
+
+            return Result.Ok();
+        }
     }
 }

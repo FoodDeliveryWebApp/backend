@@ -26,13 +26,20 @@ namespace Explorer.Stakeholders.Core.Domain
             Validate();
         }
 
+        public void Update(string name, decimal price, string description, string imageUrl)
+        {
+            Name = name;
+            Price = price;
+            Description = description;
+            ImageUrl = imageUrl;
+            Validate();
+        }
+
         private void Validate()
         {
             if (string.IsNullOrWhiteSpace(Name)) throw new ArgumentException("Invalid food name.");
             if (Price <= 0) throw new ArgumentException("Invalid food price.");
             if (string.IsNullOrWhiteSpace(ImageUrl)) throw new ArgumentException("Invalid image URL.");
         }
-
-
     }
 }

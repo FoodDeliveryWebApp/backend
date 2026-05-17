@@ -34,15 +34,15 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             // Create a new worker entity
             var worker = new User(
-                workerDto.Username,
-                workerDto.Password,
+                workerDto.Username!,
+                workerDto.Password!,
                 UserRole.Worker,
                 workerDto.IsActive
             );
 
             await _userRepository.CreateAsync(worker);
             var email = workerDto.Email ?? workerDto.Username;
-            _personRepository.Create(new Person(worker.Id, workerDto.Name ?? workerDto.Username, workerDto.Surname ?? "-", email));
+            _personRepository.Create(new Person(worker.Id, workerDto.Name ?? workerDto.Username!, workerDto.Surname ?? "-", email!));
 
             restaurant.Workers.Add(worker);
             await _restaurantRepository.UpdateAsync(restaurant);
@@ -59,10 +59,10 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             // Create a new food item
             var food = new Food(
-                foodDto.Name,
+                foodDto.Name!,
                 foodDto.Price,
-                foodDto.Description,
-                foodDto.ImageUrl,
+                foodDto.Description!,
+                foodDto.ImageUrl!,
                 foodDto.RestaurantId
             );
 
@@ -102,12 +102,72 @@ namespace Explorer.Stakeholders.Core.UseCases
             return Result.Ok(result);
         }
 
+        public async Task<Result<IEnumerable<UserDto>>> GetWorkersAsync(int restaurantId)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(restaurantId);
+            if (restaurant == null) return Result.Fail("Restaurant not found.");
+
+            var workers = restaurant.Workers.Select(w =>
+            {
+                var person = _userRepository.GetPersonByUserId(w.Id);
+                return new UserDto
+                {
+                    Id = w.Id,
+                    Username = w.Username,
+                    IsActive = w.IsActive,
+                    Role = w.Role.ToString(),
+                    Name = person?.Name,
+                    Surname = person?.Surname,
+                    Email = person?.Email
+                };
+            });
+
+            return Result.Ok(workers);
+        }
+
+        public async Task<Result> RemoveWorkerAsync(int restaurantId, int workerId)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(restaurantId);
+            if (restaurant == null) return Result.Fail("Restaurant not found.");
+
+            var worker = restaurant.Workers.FirstOrDefault(w => w.Id == workerId);
+            if (worker == null) return Result.Fail("Worker not found in this restaurant.");
+
+            restaurant.Workers.Remove(worker);
+            await _restaurantRepository.UpdateAsync(restaurant);
+
+            return Result.Ok();
+        }
+
+        public async Task<Result> UpdateWorkerAsync(int restaurantId, int workerId, UserDto dto)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(restaurantId);
+            if (restaurant == null) return Result.Fail("Restaurant not found.");
+
+            var worker = restaurant.Workers.FirstOrDefault(w => w.Id == workerId);
+            if (worker == null) return Result.Fail("Worker not found in this restaurant.");
+
+            worker.IsActive = dto.IsActive;
+            await _userRepository.UpdateAsync(worker);
+
+            var person = _userRepository.GetPersonByUserId(workerId);
+            if (person != null)
+            {
+                if (dto.Name != null) person.Name = dto.Name;
+                if (dto.Surname != null) person.Surname = dto.Surname;
+                if (dto.Email != null) person.Email = dto.Email;
+                _personRepository.Update(person);
+            }
+
+            return Result.Ok();
+        }
+
         public async Task<RestaurantDto> AddRestaurantAsync(RestaurantDto dto)
         {
             // Create and save the Manager
             var manager = new User(
-                dto.Manager.Username,
-                dto.Manager.Password,
+                dto.Manager.Username!,
+                dto.Manager.Password!,
                 UserRole.Manager,
                 dto.Manager.IsActive
             );
