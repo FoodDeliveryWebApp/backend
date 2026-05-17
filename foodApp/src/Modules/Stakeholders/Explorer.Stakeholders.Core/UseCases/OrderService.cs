@@ -39,7 +39,9 @@ namespace Explorer.Stakeholders.Core.UseCases
             OrderTime = order.OrderTime,
             Status = order.Status.ToString(),
             TotalPrice = order.TotalPrice,
-            Note = order.Note
+            Note = order.Note,
+            DeliveryAddress = order.DeliveryAddress,
+            PhoneNumber = order.PhoneNumber
         };
 
         public async Task<(List<OrderDto> Orders, decimal TotalEarnings)> GetAllOrdersAndEarningsForManager(int managerId)
@@ -85,7 +87,9 @@ namespace Explorer.Stakeholders.Core.UseCases
                 userId: orderDto.UserId,
                 foods: foods,
                 status: OrderStatus.Pending,
-                note: orderDto.Note
+                deliveryAddress: orderDto.DeliveryAddress!,
+                phoneNumber: orderDto.PhoneNumber!,
+                note: orderDto.Note ?? ""
             );
 
             var createdOrder = await _orderRepository.CreateOrderAsync(order);

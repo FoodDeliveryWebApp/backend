@@ -95,11 +95,11 @@ public class StakeholdersContext : DbContext
 
         // OrderStatus stored as string (HasConversion<string>)
         modelBuilder.Entity<Order>().HasData(
-            new { Id = 1, UserId = 21, OrderTime = new DateTime(2024, 3, 1, 12, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  Note = "Extra napkins please" },
-            new { Id = 2, UserId = 22, OrderTime = new DateTime(2024, 3, 2, 13, 30, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  Note = ""                    },
-            new { Id = 3, UserId = 21, OrderTime = new DateTime(2024, 3, 3, 19, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Preparing,  Note = "No onions"           },
-            new { Id = 4, UserId = 23, OrderTime = new DateTime(2024, 3, 4, 20, 15, 0, DateTimeKind.Utc), Status = OrderStatus.PickUp,     Note = ""                    },
-            new { Id = 5, UserId = 22, OrderTime = new DateTime(2024, 3, 5, 11, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Rejected,   Note = "Allergy to nuts"     }
+            new { Id = 1, UserId = 21, OrderTime = new DateTime(2024, 3, 1, 12, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  Note = "Extra napkins please", DeliveryAddress = "Bulevar Oslobodjenja 10, Novi Sad", PhoneNumber = "060-111-1111" },
+            new { Id = 2, UserId = 22, OrderTime = new DateTime(2024, 3, 2, 13, 30, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  Note = "",                     DeliveryAddress = "Zmaj Jovina 5, Novi Sad",            PhoneNumber = "061-222-2222" },
+            new { Id = 3, UserId = 21, OrderTime = new DateTime(2024, 3, 3, 19, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Preparing,  Note = "No onions",            DeliveryAddress = "Dunavska 3, Novi Sad",               PhoneNumber = "060-111-1111" },
+            new { Id = 4, UserId = 23, OrderTime = new DateTime(2024, 3, 4, 20, 15, 0, DateTimeKind.Utc), Status = OrderStatus.PickUp,     Note = "",                     DeliveryAddress = "Laze Teleckog 1, Novi Sad",          PhoneNumber = "062-333-3333" },
+            new { Id = 5, UserId = 22, OrderTime = new DateTime(2024, 3, 5, 11, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Rejected,   Note = "Allergy to nuts",      DeliveryAddress = "Zmaj Jovina 5, Novi Sad",            PhoneNumber = "061-222-2222" }
         );
 
         // RatedById and RestaurantId are shadow FKs from navigation properties
@@ -224,6 +224,14 @@ public class StakeholdersContext : DbContext
         modelBuilder.Entity<Order>()
             .Property(o => o.Note)
             .HasMaxLength(500);
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.DeliveryAddress)
+            .IsRequired();
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.PhoneNumber)
+            .IsRequired();
 
         // Many-to-many relationship between Order and Food
         modelBuilder.Entity<Order>()

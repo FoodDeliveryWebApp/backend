@@ -30,16 +30,20 @@ namespace Explorer.Stakeholders.Core.Domain
         public OrderStatus Status { get;  set; }
         public decimal TotalPrice => Foods.Sum(f => f.Price);
         public string Note { get; private set; }
+        public string DeliveryAddress { get; private set; }
+        public string PhoneNumber { get; private set; }
 
         protected Order() { }
 
-        public Order(int userId, List<Food> foods, OrderStatus status, string note = "")
+        public Order(int userId, List<Food> foods, OrderStatus status, string deliveryAddress, string phoneNumber, string note = "")
         {
             UserId = userId;
             Foods = foods ?? throw new ArgumentNullException(nameof(foods));
             Status = status;
             OrderTime = DateTime.UtcNow;
             Note = note;
+            DeliveryAddress = deliveryAddress;
+            PhoneNumber = phoneNumber;
 
             Validate();
         }
@@ -49,6 +53,8 @@ namespace Explorer.Stakeholders.Core.Domain
             if (UserId == 0) throw new ArgumentException("Invalid user ID.");
             if (Foods == null || Foods.Count == 0) throw new ArgumentException("Order must contain at least one food item.");
             if (Note.Length > 500) throw new ArgumentException("Note is too long (max 500 characters).");
+            if (string.IsNullOrWhiteSpace(DeliveryAddress)) throw new ArgumentException("Delivery address is required.");
+            if (string.IsNullOrWhiteSpace(PhoneNumber)) throw new ArgumentException("Phone number is required.");
         }
 
      

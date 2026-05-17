@@ -7,10 +7,12 @@ namespace Explorer.Stakeholders.API.Dtos
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public List<FoodDto> Foods { get; set; }
+        public List<FoodDto>? Foods { get; set; }
         public DateTime OrderTime { get; set; }
-        public string Status { get; set; } // Jedan status za sve
+        public string? Status { get; set; }
         public decimal TotalPrice { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
+        public string? DeliveryAddress { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }
