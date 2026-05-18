@@ -52,11 +52,24 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        // Update an existing restaurant
         public async Task UpdateAsync(Restaurant restaurant)
         {
             _context.Restaurants.Update(restaurant);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var restaurant = await _context.Restaurants
+                .Include(r => r.Manager)
+                .Include(r => r.Workers)
+                .Include(r => r.Foods)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            if (restaurant != null)
+            {
+                _context.Restaurants.Remove(restaurant);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

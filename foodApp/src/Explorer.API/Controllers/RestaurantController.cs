@@ -75,5 +75,45 @@ namespace Explorer.API.Controllers
             var result = await _restaurantService.UpdateWorkerAsync(restaurantId, workerId, dto);
             return CreateResponse(result);
         }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "administrator")]
+        public async Task<ActionResult<RestaurantDto>> UpdateRestaurant(int id, [FromBody] RestaurantDto dto)
+        {
+            var result = await _restaurantService.UpdateRestaurantAsync(id, dto);
+            return CreateResponse(result);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "administrator")]
+        public async Task<ActionResult> DeleteRestaurant(int id)
+        {
+            var result = await _restaurantService.DeleteRestaurantAsync(id);
+            return CreateResponse(result);
+        }
+
+        [HttpPost("upload-image")]
+        [Authorize(Roles = "administrator")]
+        public async Task<ActionResult<string>> UploadImage(IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+                return BadRequest("No image provided.");
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+            var ext = Path.GetExtension(image.FileName).ToLowerInvariant();
+            if (!allowedExtensions.Contains(ext))
+                return BadRequest("Only jpg, png, webp and gif files are allowed.");
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "restaurants");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await image.CopyToAsync(stream);
+
+            return Ok($"images/restaurants/{fileName}");
+        }
     }
 }

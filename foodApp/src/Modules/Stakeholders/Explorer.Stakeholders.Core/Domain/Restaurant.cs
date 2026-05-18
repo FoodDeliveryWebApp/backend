@@ -46,6 +46,17 @@ namespace Explorer.Stakeholders.Core.Domain
             Manager = manager ?? throw new ArgumentNullException(nameof(manager));
         }
 
+        public void Update(string name, string address, string phoneNumber, bool isActive, CuisineType cuisine, string imageUrl)
+        {
+            Name = name;
+            Address = address;
+            PhoneNumber = phoneNumber;
+            IsActive = isActive;
+            Cuisine = cuisine;
+            ImageUrl = imageUrl;
+            Validate();
+        }
+
         public string GetCuisineTypeName()
         {
             return Cuisine.ToString().ToLower();

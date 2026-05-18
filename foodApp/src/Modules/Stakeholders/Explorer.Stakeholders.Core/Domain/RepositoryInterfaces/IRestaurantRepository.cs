@@ -14,6 +14,6 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
 
         Task<Restaurant?> GetByIdAsync(int id);
         Task UpdateAsync(Restaurant restaurant);
-
+        Task DeleteAsync(int id);
     }
 }

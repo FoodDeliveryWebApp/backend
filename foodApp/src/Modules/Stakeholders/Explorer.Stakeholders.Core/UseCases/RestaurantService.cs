@@ -82,21 +82,34 @@ namespace Explorer.Stakeholders.Core.UseCases
             if (restaurants == null || !restaurants.Any())
                 return Result.Fail("No restaurants found.");
 
-            var result = restaurants.Select(r => new RestaurantDto
+            var result = restaurants.Select(r =>
             {
-                Id = r.Id,
-                Name = r.Name,
-                Address = r.Address,
-                PhoneNumber = r.PhoneNumber,
-                IsActive = r.IsActive,
-                Cuisine = r.GetCuisineTypeName(),
-                ImageUrl = r.ImageUrl,
-                Manager = r.Manager == null ? null : new UserDto
+                UserDto? managerDto = null;
+                if (r.Manager != null)
                 {
-                    Username = r.Manager.Username,
-                    Role = r.Manager.Role.ToString(),
-                    IsActive = r.Manager.IsActive
+                    var person = _userRepository.GetPersonByUserId(r.Manager.Id);
+                    managerDto = new UserDto
+                    {
+                        Id = r.Manager.Id,
+                        Username = r.Manager.Username,
+                        Role = r.Manager.Role.ToString(),
+                        IsActive = r.Manager.IsActive,
+                        Name = person?.Name,
+                        Surname = person?.Surname,
+                        Email = person?.Email
+                    };
                 }
+                return new RestaurantDto
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Address = r.Address,
+                    PhoneNumber = r.PhoneNumber,
+                    IsActive = r.IsActive,
+                    Cuisine = r.GetCuisineTypeName(),
+                    ImageUrl = r.ImageUrl,
+                    Manager = managerDto
+                };
             });
 
             return Result.Ok(result);
@@ -159,6 +172,86 @@ namespace Explorer.Stakeholders.Core.UseCases
                 _personRepository.Update(person);
             }
 
+            return Result.Ok();
+        }
+
+        public async Task<Result<RestaurantDto>> UpdateRestaurantAsync(int id, RestaurantDto dto)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(id);
+            if (restaurant == null) return Result.Fail("Restaurant not found.");
+
+            if (!Enum.TryParse<CuisineType>(dto.Cuisine, true, out var cuisineEnum))
+                return Result.Fail("Invalid cuisine type.");
+
+            restaurant.Update(dto.Name, dto.Address, dto.PhoneNumber, dto.IsActive, cuisineEnum, dto.ImageUrl);
+
+            if (dto.Manager != null && !string.IsNullOrWhiteSpace(dto.Manager.Password))
+            {
+                // Create new manager user and assign to restaurant
+                if (_userRepository.Exists(dto.Manager.Username!))
+                    return Result.Fail("Manager username already taken.");
+
+                var newManager = new User(dto.Manager.Username!, dto.Manager.Password, UserRole.Manager, true);
+                await _userRepository.CreateAsync(newManager);
+                _personRepository.Create(new Person(newManager.Id, dto.Manager.Name ?? dto.Manager.Username!, dto.Manager.Surname ?? "-", dto.Manager.Email ?? dto.Manager.Username!));
+                restaurant.SetManager(newManager);
+            }
+            else if (dto.Manager != null && restaurant.Manager != null)
+            {
+                // Update existing manager's person info only
+                var existingManager = restaurant.Manager;
+                existingManager.IsActive = dto.Manager.IsActive;
+                await _userRepository.UpdateAsync(existingManager);
+
+                var person = _userRepository.GetPersonByUserId(existingManager.Id);
+                if (person != null)
+                {
+                    if (dto.Manager.Name != null) person.Name = dto.Manager.Name;
+                    if (dto.Manager.Surname != null) person.Surname = dto.Manager.Surname;
+                    if (dto.Manager.Email != null) person.Email = dto.Manager.Email;
+                    _personRepository.Update(person);
+                }
+            }
+
+            await _restaurantRepository.UpdateAsync(restaurant);
+
+            var managerPerson = restaurant.Manager != null ? _userRepository.GetPersonByUserId(restaurant.Manager.Id) : null;
+            return Result.Ok(new RestaurantDto
+            {
+                Id = restaurant.Id,
+                Name = restaurant.Name,
+                Address = restaurant.Address,
+                PhoneNumber = restaurant.PhoneNumber,
+                IsActive = restaurant.IsActive,
+                Cuisine = restaurant.GetCuisineTypeName(),
+                ImageUrl = restaurant.ImageUrl,
+                Manager = restaurant.Manager == null ? null : new UserDto
+                {
+                    Id = restaurant.Manager.Id,
+                    Username = restaurant.Manager.Username,
+                    Role = restaurant.Manager.Role.ToString(),
+                    IsActive = restaurant.Manager.IsActive,
+                    Name = managerPerson?.Name,
+                    Surname = managerPerson?.Surname,
+                    Email = managerPerson?.Email
+                }
+            });
+        }
+
+        public async Task<Result> DeleteRestaurantAsync(int id)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(id);
+            if (restaurant == null) return Result.Fail("Restaurant not found.");
+
+            if (restaurant.Manager != null)
+            {
+                var managerId = restaurant.Manager.Id;
+                var person = _userRepository.GetPersonByUserId(managerId);
+                if (person != null) _personRepository.Delete(person.Id);
+                await _userRepository.DeleteAsync(managerId);
+            }
+
+            await _restaurantRepository.DeleteAsync(id);
             return Result.Ok();
         }
 
