@@ -1,14 +1,18 @@
-﻿using System;
+using System;
 
 namespace Explorer.Stakeholders.API.Dtos
 {
     public class RatingReportDto
     {
-        public int Id { get; set; }                // ID prijave
-        public int OrderId { get; set; }           // ID porudžbine (da ne vraćamo ceo Order objekat)
-        public int ManagerId { get; set; }         // ID menadžera koji je obrađuje
-        public string Comment { get; set; }         // Komentar menadžera ili gosta
-        public string Status { get; set; }          // Pending, Approved, Rejected
-        public DateTime CreatedAt { get; set; }     // Datum i vreme kada je prijava napravljena
+        public int Id { get; set; }
+        public int RatingId { get; set; }
+        public int ManagerId { get; set; }
+        public string Reason { get; set; } = string.Empty;
+        public string? Status { get; set; }
+        public DateTime CreatedAt { get; set; }
+        // Populated on read — display info for admin
+        public int RatingValue { get; set; }
+        public string? RatingComment { get; set; }
+        public int RestaurantId { get; set; }
     }
 }

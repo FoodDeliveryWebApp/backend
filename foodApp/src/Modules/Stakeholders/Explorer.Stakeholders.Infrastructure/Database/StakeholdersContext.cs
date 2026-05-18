@@ -12,9 +12,7 @@ public class StakeholdersContext : DbContext
     public DbSet<RestaurantRating> RestaurantRatings { get; set; }
 
     public DbSet<RatingReport> RatingReports { get; set; }
-    public DbSet<RestaurantApplication> RestaurantApplications { get; set; }
-
-    public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
+public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,25 +24,10 @@ public class StakeholdersContext : DbContext
         ConfigureFood(modelBuilder);
         ConfigureOrder(modelBuilder);
         ConfigureRestaurantRating(modelBuilder);
-        ConfigureRestaurantApplication(modelBuilder);
-        SeedData(modelBuilder);
+SeedData(modelBuilder);
     }
 
-    private static void ConfigureRestaurantApplication(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<RestaurantApplication>()
-            .Property(a => a.Status)
-            .IsRequired()
-            .HasConversion<string>();
-
-        modelBuilder.Entity<RestaurantApplication>()
-            .Property(a => a.RestaurantName).IsRequired();
-
-        modelBuilder.Entity<RestaurantApplication>()
-            .Property(a => a.ManagerUsername).IsRequired();
-    }
-
-    private static void SeedData(ModelBuilder modelBuilder)
+private static void SeedData(ModelBuilder modelBuilder)
     {
         // UserRole stored as int (no HasConversion): Administrator=0, Manager=1, Worker=2, DeliveryMan=3, Guest=4
         modelBuilder.Entity<User>().HasData(
@@ -111,18 +94,17 @@ public class StakeholdersContext : DbContext
             new { Id = 5, Rating = 7, Comment = "Dobra atmosfera i ukusna hrana.",     RatedById = 22, RestaurantId = 3, CreatedAt = new DateTime(2024, 3, 6, 18, 0, 0, DateTimeKind.Utc), isDeleted = false }
         );
 
-        // RatingReportStatus stored as string; OrderId and ManagerId are shadow FKs
+        // RatingReportStatus stored as string; RatingId and ManagerId are shadow FKs
         modelBuilder.Entity<RatingReport>().HasData(
-            new { Id = 1, OrderId = 1, ManagerId = 2, Comment = "Guest reported an issue with order quality.",      Status = RatingReportStatus.Pending,  CreatedAt = new DateTime(2024, 3, 2, 9, 0, 0, DateTimeKind.Utc) },
-            new { Id = 2, OrderId = 2, ManagerId = 3, Comment = "Late delivery, compensation approved.",           Status = RatingReportStatus.Approved, CreatedAt = new DateTime(2024, 3, 3, 10, 0, 0, DateTimeKind.Utc) },
-            new { Id = 3, OrderId = 5, ManagerId = 4, Comment = "Order rejected due to allergen miscommunication.",Status = RatingReportStatus.Rejected, CreatedAt = new DateTime(2024, 3, 6, 8, 0, 0, DateTimeKind.Utc) }
+            new { Id = 1, RatingId = 2, ManagerId = 2, Reason = "Rating seems unfair, guest was very demanding.", Status = RatingReportStatus.Pending,  CreatedAt = new DateTime(2024, 3, 3, 9, 0, 0, DateTimeKind.Utc) },
+            new { Id = 2, RatingId = 4, ManagerId = 4, Reason = "Comment is misleading, the issue was resolved.", Status = RatingReportStatus.Rejected, CreatedAt = new DateTime(2024, 3, 6, 8, 0, 0, DateTimeKind.Utc) }
         );
     }
 
     private static void ConfigureRatingReport(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<RatingReport>()
-            .Property(r => r.Comment)
+            .Property(r => r.Reason)
             .IsRequired();
 
         modelBuilder.Entity<RatingReport>()
@@ -131,7 +113,7 @@ public class StakeholdersContext : DbContext
             .HasConversion<string>();
 
         modelBuilder.Entity<RatingReport>()
-            .HasOne(r => r.Order)
+            .HasOne(r => r.Rating)
             .WithMany()
             .IsRequired();
 

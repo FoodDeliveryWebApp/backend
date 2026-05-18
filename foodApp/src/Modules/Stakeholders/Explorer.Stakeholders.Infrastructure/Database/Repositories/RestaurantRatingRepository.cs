@@ -18,19 +18,19 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
             _context = context;
         }
 
-        // Add a new restaurant rating
-        public async Task AddAsync(RestaurantRating rating)
+        public async Task<RestaurantRating> AddAsync(RestaurantRating rating)
         {
             await _context.RestaurantRatings.AddAsync(rating);
             await _context.SaveChangesAsync();
+            return rating;
         }
 
-        public async Task<RestaurantRating> GetByOrderIdAsync(int orderId)
+        public async Task<RestaurantRating> GetByIdAsync(int id)
         {
             return await _context.RestaurantRatings
-                .Include(r => r.Restaurant)
                 .Include(r => r.RatedBy)
-                .FirstOrDefaultAsync(r => r.Restaurant.Id == orderId && !r.isDeleted);
+                .Include(r => r.Restaurant)
+                .FirstOrDefaultAsync(r => r.Id == id && !r.isDeleted);
         }
 
         public async Task UpdateAsync(RestaurantRating rating)

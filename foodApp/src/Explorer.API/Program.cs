@@ -38,6 +38,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<StakeholdersContext>();
+    context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
 }
 

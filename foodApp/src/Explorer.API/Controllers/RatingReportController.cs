@@ -1,7 +1,9 @@
-﻿using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Public;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Explorer.API.Controllers
@@ -10,38 +12,69 @@ namespace Explorer.API.Controllers
     [ApiController]
     public class RatingReportController : ControllerBase
     {
-        private readonly IRatingReportService _ratingReportService;
+        private readonly IRatingReportService _service;
 
-        public RatingReportController(IRatingReportService ratingReportService)
-        {
-            _ratingReportService = ratingReportService;
-        }
+        public RatingReportController(IRatingReportService service) => _service = service;
 
-        // ➤ Kreira prijavu za neku ocenu (menadžer)
         [HttpPost]
         [Authorize(Roles = "manager")]
         public async Task<ActionResult<RatingReportDto>> CreateReport([FromBody] RatingReportDto dto)
         {
-            var report = await _ratingReportService.CreateReportAsync(dto);
-            return CreatedAtAction(nameof(CreateReport), new { id = report.Id }, report);
+            var userIdClaim = User.FindFirstValue("id");
+            if (!int.TryParse(userIdClaim, out var managerId))
+                return Unauthorized("Invalid user.");
+
+            try
+            {
+                var report = await _service.CreateReportAsync(managerId, dto);
+                return CreatedAtAction(nameof(CreateReport), new { id = report.Id }, report);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // ➤ Administrator menja status prijave (pregled prijave)
+        [HttpGet]
+        [Authorize(Roles = "administrator")]
+        public async Task<ActionResult<List<RatingReportDto>>> GetAllReports()
+        {
+            var reports = await _service.GetAllReportsAsync();
+            return Ok(reports);
+        }
+
+        [HttpGet("my")]
+        [Authorize(Roles = "manager")]
+        public async Task<ActionResult<List<RatingReportDto>>> GetMyReports()
+        {
+            var userIdClaim = User.FindFirstValue("id");
+            if (!int.TryParse(userIdClaim, out var managerId))
+                return Unauthorized("Invalid user.");
+
+            try
+            {
+                var reports = await _service.GetManagerReportsAsync(managerId);
+                return Ok(reports);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPut("{reportId}/status")]
         [Authorize(Roles = "administrator")]
         public async Task<ActionResult<RatingReportDto>> UpdateReportStatus(int reportId, [FromBody] string newStatus)
         {
-            var updatedReport = await _ratingReportService.UpdateReportStatusAsync(reportId, newStatus);
-            return Ok(updatedReport);
-        }
-
-        // ➤ (Opcionalno) Pregled svih prijava
-        [HttpGet]
-        [Authorize(Roles = "administrator,manager")]
-        public async Task<ActionResult<List<RatingReportDto>>> GetAllReports()
-        {
-            var reports = await _ratingReportService.GetAllReportsAsync();
-            return Ok(reports);
+            try
+            {
+                var updated = await _service.UpdateReportStatusAsync(reportId, newStatus);
+                return Ok(updated);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

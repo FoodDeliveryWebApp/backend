@@ -8,6 +8,7 @@ namespace Explorer.Stakeholders.API.Dtos
 {
     public class RestaurantRatingDto
     {
+        public int Id { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; }
         public int RatedByUserId { get; set; }

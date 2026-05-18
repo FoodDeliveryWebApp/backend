@@ -8,11 +8,9 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
 {
     public interface IRestaurantRatingRepository
     {
-        Task AddAsync(RestaurantRating rating);
+        Task<RestaurantRating> AddAsync(RestaurantRating rating);
         Task<List<RestaurantRating>> GetByRestaurantIdAsync(int restaurantId);
-
-        Task<RestaurantRating> GetByOrderIdAsync(int orderId);
+        Task<RestaurantRating> GetByIdAsync(int id);
         Task UpdateAsync(RestaurantRating rating);
-
     }
 }

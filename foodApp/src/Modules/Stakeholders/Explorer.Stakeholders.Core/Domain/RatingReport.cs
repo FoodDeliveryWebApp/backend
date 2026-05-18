@@ -1,51 +1,31 @@
-﻿using Explorer.BuildingBlocks.Core.Domain;
+using Explorer.BuildingBlocks.Core.Domain;
 using System;
 
 namespace Explorer.Stakeholders.Core.Domain
 {
-    public enum RatingReportStatus
-    {
-        Pending,
-        Approved,
-        Rejected
-    }
+    public enum RatingReportStatus { Pending, Approved, Rejected }
 
     public class RatingReport : Entity
     {
-        public Order Order { get; private set; }          // Porudžbina na koju se prijava odnosi
-        public User Manager { get; private set; }         // Menadžer koji je obrađuje
-        public string Comment { get; private set; }       // Komentar menadžera ili gosta
-        public RatingReportStatus Status { get; private set; }  // Status prijave
-        public DateTime CreatedAt { get; private set; }   // Kada je prijava kreirana
+        public RestaurantRating Rating { get; private set; }
+        public User Manager { get; private set; }
+        public string Reason { get; private set; }
+        public RatingReportStatus Status { get; private set; }
+        public DateTime CreatedAt { get; private set; }
 
         protected RatingReport() { }
-        // Konstruktor
-        public RatingReport(Order order, User manager, string comment, RatingReportStatus status = RatingReportStatus.Pending)
+
+        public RatingReport(RestaurantRating rating, User manager, string reason)
         {
-            Order = order ?? throw new ArgumentNullException(nameof(order));
+            Rating = rating ?? throw new ArgumentNullException(nameof(rating));
             Manager = manager ?? throw new ArgumentNullException(nameof(manager));
-            Comment = comment;
-            Status = status;
+            if (string.IsNullOrWhiteSpace(reason))
+                throw new ArgumentException("Reason is required.");
+            Reason = reason.Trim();
+            Status = RatingReportStatus.Pending;
             CreatedAt = DateTime.UtcNow;
-
-            Validate();
         }
 
-        // Metod za ažuriranje statusa (i eventualnog komentara)
-        public void UpdateStatus(RatingReportStatus newStatus, string newComment = "")
-        {
-            Status = newStatus;
-
-            if (!string.IsNullOrWhiteSpace(newComment))
-            {
-                Comment = newComment;
-            }
-        }
-
-        private void Validate()
-        {
-            if (Comment != null && Comment.Length > 1000)
-                throw new ArgumentException("Comment too long (max 1000 characters).");
-        }
+        public void UpdateStatus(RatingReportStatus newStatus) => Status = newStatus;
     }
 }

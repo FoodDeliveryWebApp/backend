@@ -10,7 +10,8 @@ namespace Explorer.Stakeholders.API.Public
 {
     public interface IRestaurantRatingService
     {
-        Task<Result> AddRatingAsync(RestaurantRatingDto dto);
+        Task<Result<RestaurantRatingDto>> AddRatingAsync(RestaurantRatingDto dto);
+        Task<Result<RestaurantRatingDto>> UpdateRatingAsync(int id, RestaurantRatingDto dto);
         Task<List<RestaurantRatingDto>> GetRatingsForRestaurantAsync(int restaurantId);
         Task<double?> GetAverageRatingAsync(int restaurantId);
     }

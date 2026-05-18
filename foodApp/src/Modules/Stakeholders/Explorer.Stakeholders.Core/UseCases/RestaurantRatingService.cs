@@ -30,7 +30,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             _orderRepository = orderRepository;
         }
 
-        public async Task<Result> AddRatingAsync(RestaurantRatingDto dto)
+        public async Task<Result<RestaurantRatingDto>> AddRatingAsync(RestaurantRatingDto dto)
         {
             if (dto.Rating < 1 || dto.Rating > 10)
                 return Result.Fail("Rating must be between 1 and 10.");
@@ -46,7 +46,6 @@ namespace Explorer.Stakeholders.Core.UseCases
             if (restaurant == null)
                 return Result.Fail("Restaurant not found.");
 
-            // Guest must have at least one delivered order from this restaurant
             var guestOrders = await _orderRepository.GetOrdersByStatusAsync(OrderStatus.Delivered);
             var hasOrderedFromRestaurant = guestOrders.Any(o =>
                 o.UserId == dto.RatedByUserId &&
@@ -56,28 +55,47 @@ namespace Explorer.Stakeholders.Core.UseCases
                 return Result.Fail("You can only rate a restaurant after a delivered order from it.");
 
             var rating = new RestaurantRating(dto.Rating, dto.Comment, user, restaurant);
-            await _ratingRepo.AddAsync(rating);
+            var saved = await _ratingRepo.AddAsync(rating);
 
-            return Result.Ok();
+            return Result.Ok(ToDto(saved));
+        }
+
+        public async Task<Result<RestaurantRatingDto>> UpdateRatingAsync(int id, RestaurantRatingDto dto)
+        {
+            if (dto.Rating < 1 || dto.Rating > 10)
+                return Result.Fail("Rating must be between 1 and 10.");
+
+            if (string.IsNullOrWhiteSpace(dto.Comment))
+                return Result.Fail("Comment cannot be empty.");
+
+            var rating = await _ratingRepo.GetByIdAsync(id);
+            if (rating == null)
+                return Result.Fail("Rating not found.");
+
+            if (rating.RatedBy.Id != dto.RatedByUserId)
+                return Result.Fail("You can only update your own rating.");
+
+            rating.Update(dto.Rating, dto.Comment);
+            await _ratingRepo.UpdateAsync(rating);
+
+            return Result.Ok(ToDto(rating));
         }
 
         public async Task<List<RestaurantRatingDto>> GetRatingsForRestaurantAsync(int restaurantId)
         {
-            // Fetch all ratings for the restaurant
             var ratings = await _ratingRepo.GetByRestaurantIdAsync(restaurantId);
-
-            // Map domain entities to DTOs
-            var ratingDtos = ratings.Select(r => new RestaurantRatingDto
-            {
-                Rating = r.Rating,
-                Comment = r.Comment,
-                RatedByUserId = r.RatedBy.Id,
-                RestaurantId = r.Restaurant.Id,
-                CreatedAt = r.CreatedAt
-            }).ToList();
-
-            return ratingDtos;
+            return ratings.Select(ToDto).ToList();
         }
+
+        private static RestaurantRatingDto ToDto(RestaurantRating r) => new RestaurantRatingDto
+        {
+            Id = r.Id,
+            Rating = r.Rating,
+            Comment = r.Comment,
+            RatedByUserId = r.RatedBy.Id,
+            RestaurantId = r.Restaurant.Id,
+            CreatedAt = r.CreatedAt
+        };
 
         public async Task<double?> GetAverageRatingAsync(int restaurantId)
         {

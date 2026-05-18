@@ -19,43 +19,51 @@ namespace Explorer.API.Controllers
             _ratingService = ratingService;
         }
 
-        // POST api/restaurant-ratings
         [HttpPost]
-        [Authorize(Roles = "guest")]  // Only Guest users can add ratings
-        public async Task<ActionResult> AddRating([FromBody] RestaurantRatingDto ratingDto)
+        [Authorize(Roles = "guest")]
+        public async Task<ActionResult<RestaurantRatingDto>> AddRating([FromBody] RestaurantRatingDto ratingDto)
         {
-            // Optionally, override RatedByUserId from the authenticated user
             var userIdClaim = User.FindFirstValue("id");
             if (!int.TryParse(userIdClaim, out var userId))
-            {
                 return Unauthorized("Invalid user.");
-            }
-            //obrati paznju imas i user id u dto
+
             ratingDto.RatedByUserId = userId;
             ratingDto.CreatedAt = System.DateTime.UtcNow;
 
             var result = await _ratingService.AddRatingAsync(ratingDto);
 
             if (result.IsFailed)
-            {
                 return BadRequest(result.Errors);
-            }
 
-            return CreatedAtAction(nameof(AddRating), null); // No specific resource URL yet
+            return CreatedAtAction(nameof(AddRating), result.Value);
         }
 
+        [HttpPut("{id}")]
+        [Authorize(Roles = "guest")]
+        public async Task<ActionResult<RestaurantRatingDto>> UpdateRating(int id, [FromBody] RestaurantRatingDto ratingDto)
+        {
+            var userIdClaim = User.FindFirstValue("id");
+            if (!int.TryParse(userIdClaim, out var userId))
+                return Unauthorized("Invalid user.");
+
+            ratingDto.RatedByUserId = userId;
+
+            var result = await _ratingService.UpdateRatingAsync(id, ratingDto);
+
+            if (result.IsFailed)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Value);
+        }
 
         [HttpGet("restaurant/{restaurantId}")]
-        [Authorize(Roles = "manager")]  // Only Manager can view ratings
+        [Authorize(Roles = "guest,manager")]
         public async Task<ActionResult<List<RestaurantRatingDto>>> GetRatingsForRestaurant(int restaurantId)
         {
-            // Pretpostavljamo da servis ima metodu za dobijanje svih ocena restorana
             var ratings = await _ratingService.GetRatingsForRestaurantAsync(restaurantId);
 
             if (ratings == null || ratings.Count == 0)
-            {
                 return NotFound("No ratings found for this restaurant.");
-            }
 
             return Ok(ratings);
         }

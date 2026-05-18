@@ -30,6 +30,13 @@ namespace Explorer.Stakeholders.Core.Domain
             Validate();
         }
 
+        public void Update(int rating, string comment)
+        {
+            Rating = rating;
+            Comment = comment;
+            Validate();
+        }
+
         private void Validate()
         {
             if (Rating < 1 || Rating > 10)

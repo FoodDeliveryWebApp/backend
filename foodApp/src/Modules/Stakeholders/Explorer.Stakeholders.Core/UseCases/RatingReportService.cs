@@ -1,4 +1,4 @@
-﻿using Explorer.Stakeholders.API.Dtos;
+using Explorer.Stakeholders.API.Dtos;
 using Explorer.Stakeholders.API.Public;
 using Explorer.Stakeholders.Core.Domain;
 using Explorer.Stakeholders.Core.Domain.RepositoryInterfaces;
@@ -11,87 +11,91 @@ namespace Explorer.Stakeholders.Core.UseCases
 {
     public class RatingReportService : IRatingReportService
     {
-        private readonly IRatingReportRepository _ratingReportRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IOrderRepository _orderRepository;
-
-        private readonly IRestaurantRatingRepository _ratingRepository;
+        private readonly IRatingReportRepository _reportRepo;
+        private readonly IUserRepository _userRepo;
+        private readonly IRestaurantRatingRepository _ratingRepo;
+        private readonly IRestaurantRepository _restaurantRepo;
 
         public RatingReportService(
-            IRatingReportRepository ratingReportRepository,
-            IUserRepository userRepository,
-            IOrderRepository orderRepository,
-            IRestaurantRatingRepository ratingRepository)
+            IRatingReportRepository reportRepo,
+            IUserRepository userRepo,
+            IRestaurantRatingRepository ratingRepo,
+            IRestaurantRepository restaurantRepo)
         {
-            _ratingReportRepository = ratingReportRepository;
-            _userRepository = userRepository;
-            _orderRepository = orderRepository;
-            _ratingRepository = ratingRepository;
+            _reportRepo = reportRepo;
+            _userRepo = userRepo;
+            _ratingRepo = ratingRepo;
+            _restaurantRepo = restaurantRepo;
         }
 
-
-        public async Task<RatingReportDto> CreateReportAsync(RatingReportDto dto)
+        public async Task<RatingReportDto> CreateReportAsync(int managerId, RatingReportDto dto)
         {
-            var manager = await _userRepository.GetByIdAsync(dto.ManagerId);
-            var order = await _orderRepository.GetOrderByIdAsync(dto.OrderId);
+            if (string.IsNullOrWhiteSpace(dto.Reason))
+                throw new ArgumentException("Reason is required.");
 
-            if (manager == null) throw new ArgumentException("Manager not found.");
-            if (order == null) throw new ArgumentException("Order not found.");
+            var manager = await _userRepo.GetByIdAsync(managerId)
+                ?? throw new ArgumentException("Manager not found.");
 
-            var statusEnum = Enum.Parse<RatingReportStatus>(dto.Status, true);
+            var rating = await _ratingRepo.GetByIdAsync(dto.RatingId)
+                ?? throw new ArgumentException("Rating not found.");
 
-            var report = new RatingReport(order, manager, dto.Comment, statusEnum);
+            // Ensure rating belongs to a restaurant managed by this manager
+            var restaurants = await _restaurantRepo.GetAllRestaurantsAsync();
+            var managed = restaurants.FirstOrDefault(r => r.Manager?.Id == managerId);
+            if (managed == null || rating.Restaurant.Id != managed.Id)
+                throw new InvalidOperationException("You can only report ratings for your own restaurant.");
 
-            var created = await _ratingReportRepository.CreateAsync(report);
+            if (await _reportRepo.ExistsForRatingAsync(dto.RatingId))
+                throw new InvalidOperationException("A pending report already exists for this rating.");
 
+            var report = new RatingReport(rating, manager, dto.Reason);
+            var created = await _reportRepo.CreateAsync(report);
             return ToDto(created);
         }
 
         public async Task<RatingReportDto> UpdateReportStatusAsync(int reportId, string newStatus)
         {
-            var report = await _ratingReportRepository.GetByIdAsync(reportId);
-            if (report == null)
-                throw new ArgumentException("Report not found.");
-
-            if (!Enum.TryParse<RatingReportStatus>(newStatus, true, out var parsedStatus))
+            if (!Enum.TryParse<RatingReportStatus>(newStatus, true, out var status))
                 throw new ArgumentException("Invalid status value.");
 
-            // Ako je prijava odobrena — brišemo povezani rating
-            if (parsedStatus == RatingReportStatus.Approved)
+            var report = await _reportRepo.GetByIdAsync(reportId)
+                ?? throw new ArgumentException("Report not found.");
+
+            report.UpdateStatus(status);
+
+            if (status == RatingReportStatus.Approved)
             {
-                var rating = await _ratingRepository.GetByOrderIdAsync(report.Order.Id);
-                if (rating != null)
-                {
-                    rating.isDeleted = true;
-                    await _ratingRepository.UpdateAsync(rating);
-                }
+                report.Rating.isDeleted = true;
+                await _ratingRepo.UpdateAsync(report.Rating);
             }
 
-            report.UpdateStatus(parsedStatus);
-            var updated = await _ratingReportRepository.UpdateAsync(report);
-
+            var updated = await _reportRepo.UpdateAsync(report);
             return ToDto(updated);
         }
 
-
-
         public async Task<List<RatingReportDto>> GetAllReportsAsync()
         {
-            var reports = await _ratingReportRepository.GetAllAsync();
+            var reports = await _reportRepo.GetAllAsync();
             return reports.Select(ToDto).ToList();
         }
 
-        private static RatingReportDto ToDto(RatingReport report)
+        public async Task<List<RatingReportDto>> GetManagerReportsAsync(int managerId)
         {
-            return new RatingReportDto
-            {
-                Id = report.Id,
-                OrderId = report.Order.Id,
-                ManagerId = report.Manager.Id,
-                Comment = report.Comment,
-                Status = report.Status.ToString(),
-                CreatedAt = report.CreatedAt
-            };
+            var reports = await _reportRepo.GetByManagerIdAsync(managerId);
+            return reports.Select(ToDto).ToList();
         }
+
+        private static RatingReportDto ToDto(RatingReport r) => new RatingReportDto
+        {
+            Id = r.Id,
+            RatingId = r.Rating.Id,
+            ManagerId = r.Manager.Id,
+            Reason = r.Reason,
+            Status = r.Status.ToString(),
+            CreatedAt = r.CreatedAt,
+            RatingValue = r.Rating.Rating,
+            RatingComment = r.Rating.Comment,
+            RestaurantId = r.Rating.Restaurant.Id
+        };
     }
 }
