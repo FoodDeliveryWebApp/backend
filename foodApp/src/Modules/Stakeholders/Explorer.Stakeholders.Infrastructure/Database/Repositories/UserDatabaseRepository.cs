@@ -61,4 +61,19 @@ public class UserDatabaseRepository : IUserRepository
     {
         return _dbContext.People.FirstOrDefault(p => p.UserId == userId);
     }
+
+    public async Task<IEnumerable<User>> GetAllByRoleAsync(UserRole role)
+    {
+        return await _dbContext.Users.Where(u => u.Role == role).ToListAsync();
+    }
+
+    public async Task DeleteAsync(int userId)
+    {
+        var user = await _dbContext.Users.FindAsync(userId);
+        if (user != null)
+        {
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
 }

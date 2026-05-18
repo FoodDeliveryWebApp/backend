@@ -33,6 +33,7 @@ public static class StakeholdersStartup
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IRatingReportService, RatingReportService>();
         services.AddScoped<IRestaurantApplicationService, RestaurantApplicationService>();
+        services.AddScoped<IDeliveryManService, DeliveryManService>();
     }
 
     private static void SetupInfrastructure(IServiceCollection services)
