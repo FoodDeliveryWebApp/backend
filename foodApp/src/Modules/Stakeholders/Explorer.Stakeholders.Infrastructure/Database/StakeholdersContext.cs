@@ -12,6 +12,7 @@ public class StakeholdersContext : DbContext
     public DbSet<RestaurantRating> RestaurantRatings { get; set; }
 
     public DbSet<RatingReport> RatingReports { get; set; }
+    public DbSet<OrderReport> OrderReports { get; set; }
 public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,6 +20,7 @@ public StakeholdersContext(DbContextOptions<StakeholdersContext> options) : base
         modelBuilder.HasDefaultSchema("stakeholders");
         modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
         ConfigureRatingReport(modelBuilder);
+        ConfigureOrderReport(modelBuilder);
         ConfigureStakeholder(modelBuilder);
         ConfigureRestaurant(modelBuilder);
         ConfigureFood(modelBuilder);
@@ -227,6 +229,26 @@ private static void SeedData(ModelBuilder modelBuilder)
         modelBuilder.Entity<Order>()
             .HasMany(o => o.Foods)
             .WithMany();
+    }
+
+    private static void ConfigureOrderReport(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<OrderReport>()
+            .Property(r => r.Description)
+            .IsRequired();
+
+        modelBuilder.Entity<OrderReport>()
+            .Property(r => r.Answer)
+            .IsRequired(false);
+
+        modelBuilder.Entity<OrderReport>()
+            .Property(r => r.Status)
+            .IsRequired()
+            .HasConversion<string>();
+
+        modelBuilder.Entity<OrderReport>()
+            .Property(r => r.CreatedAt)
+            .IsRequired();
     }
 
     private static void ConfigureRestaurantRating(ModelBuilder modelBuilder)
