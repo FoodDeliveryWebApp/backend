@@ -65,15 +65,15 @@ private static void SeedData(ModelBuilder modelBuilder)
         );
 
         modelBuilder.Entity<Food>().HasData(
-            new { Id = 1, Name = "Margherita",       Price = 800.00m,  Description = "Classic tomato and mozzarella pizza",    ImageUrl = "images/foods/margarita.jpg",        RestaurantId = 1 },
-            new { Id = 2, Name = "Pepperoni",        Price = 950.00m,  Description = "Pizza with pepperoni and mozzarella",    ImageUrl = "images/foods/peperoni.jpg",         RestaurantId = 1 },
-            new { Id = 3, Name = "Tiramisu",         Price = 450.00m,  Description = "Traditional Italian dessert",            ImageUrl = "images/foods/tiramisu.jpg",         RestaurantId = 1 },
-            new { Id = 4, Name = "Kung Pao Chicken", Price = 700.00m,  Description = "Spicy stir-fried chicken with peanuts",  ImageUrl = "images/foods/kung-pao-chicken.jpg", RestaurantId = 2 },
-            new { Id = 5, Name = "Spring Rolls",     Price = 400.00m,  Description = "Crispy vegetable spring rolls",          ImageUrl = "images/foods/spring_roles.jpg",     RestaurantId = 2 },
-            new { Id = 6, Name = "Fried Rice",       Price = 550.00m,  Description = "Classic Chinese fried rice",             ImageUrl = "images/foods/fried_rice.jpg",       RestaurantId = 2 },
-            new { Id = 7, Name = "Rostilj Mix",      Price = 1200.00m, Description = "Mixed grill platter with sides",         ImageUrl = "images/foods/rostilj.jpg",          RestaurantId = 3 },
-            new { Id = 8, Name = "Riblja Corba",     Price = 600.00m,  Description = "Traditional Serbian fish soup",          ImageUrl = "images/foods/riblja-corba.jpg",     RestaurantId = 3 },
-            new { Id = 9, Name = "Gibanica",         Price = 350.00m,  Description = "Serbian cheese pie",                     ImageUrl = "images/foods/gibanica.jpg",         RestaurantId = 3 }
+            new { Id = 1, Name = "Margherita",       Price = 800.00m,  DeliveryPrice = 100, Description = "Classic tomato and mozzarella pizza",    ImageUrl = "images/foods/margarita.jpg",        RestaurantId = 1 },
+            new { Id = 2, Name = "Pepperoni",        Price = 950.00m,  DeliveryPrice = 100, Description = "Pizza with pepperoni and mozzarella",    ImageUrl = "images/foods/peperoni.jpg",         RestaurantId = 1 },
+            new { Id = 3, Name = "Tiramisu",         Price = 450.00m,  DeliveryPrice =  80, Description = "Traditional Italian dessert",            ImageUrl = "images/foods/tiramisu.jpg",         RestaurantId = 1 },
+            new { Id = 4, Name = "Kung Pao Chicken", Price = 700.00m,  DeliveryPrice = 120, Description = "Spicy stir-fried chicken with peanuts",  ImageUrl = "images/foods/kung-pao-chicken.jpg", RestaurantId = 2 },
+            new { Id = 5, Name = "Spring Rolls",     Price = 400.00m,  DeliveryPrice =  80, Description = "Crispy vegetable spring rolls",          ImageUrl = "images/foods/spring_roles.jpg",     RestaurantId = 2 },
+            new { Id = 6, Name = "Fried Rice",       Price = 550.00m,  DeliveryPrice =  90, Description = "Classic Chinese fried rice",             ImageUrl = "images/foods/fried_rice.jpg",       RestaurantId = 2 },
+            new { Id = 7, Name = "Rostilj Mix",      Price = 1200.00m, DeliveryPrice = 150, Description = "Mixed grill platter with sides",         ImageUrl = "images/foods/rostilj.jpg",          RestaurantId = 3 },
+            new { Id = 8, Name = "Riblja Corba",     Price = 600.00m,  DeliveryPrice = 100, Description = "Traditional Serbian fish soup",          ImageUrl = "images/foods/riblja-corba.jpg",     RestaurantId = 3 },
+            new { Id = 9, Name = "Gibanica",         Price = 350.00m,  DeliveryPrice =  70, Description = "Serbian cheese pie",                     ImageUrl = "images/foods/gibanica.jpg",         RestaurantId = 3 }
         );
 
         // OrderStatus stored as string (HasConversion<string>)
@@ -177,6 +177,10 @@ private static void SeedData(ModelBuilder modelBuilder)
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<Food>()
+            .Property(f => f.DeliveryPrice)
+            .IsRequired();
+
+        modelBuilder.Entity<Food>()
             .Property(f => f.ImageUrl)
             .IsRequired();
 
@@ -214,6 +218,10 @@ private static void SeedData(ModelBuilder modelBuilder)
         modelBuilder.Entity<Order>()
             .Property(o => o.PhoneNumber)
             .IsRequired();
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.DeliveryManId)
+            .IsRequired(false);
 
         // Many-to-many relationship between Order and Food
         modelBuilder.Entity<Order>()

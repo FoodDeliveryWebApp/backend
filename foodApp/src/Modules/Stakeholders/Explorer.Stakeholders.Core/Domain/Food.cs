@@ -11,25 +11,28 @@ namespace Explorer.Stakeholders.Core.Domain
     {
         public string Name { get; private set; }
         public decimal Price { get; private set; }
+        public int DeliveryPrice { get; private set; }
         public string Description { get; private set; }
         public string ImageUrl { get; private set; }
 
         public int RestaurantId { get; private set; }
 
-        public Food(string name, decimal price, string description, string imageUrl, int restaurantId)
+        public Food(string name, decimal price, int deliveryPrice, string description, string imageUrl, int restaurantId)
         {
             Name = name;
             Price = price;
+            DeliveryPrice = deliveryPrice;
             Description = description;
             ImageUrl = imageUrl;
             RestaurantId = restaurantId;
             Validate();
         }
 
-        public void Update(string name, decimal price, string description, string imageUrl)
+        public void Update(string name, decimal price, int deliveryPrice, string description, string imageUrl)
         {
             Name = name;
             Price = price;
+            DeliveryPrice = deliveryPrice;
             Description = description;
             ImageUrl = imageUrl;
             Validate();

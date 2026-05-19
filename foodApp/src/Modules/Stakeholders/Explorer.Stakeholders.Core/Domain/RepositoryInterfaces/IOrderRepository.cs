@@ -13,5 +13,6 @@ namespace Explorer.Stakeholders.Core.Domain.RepositoryInterfaces
         Task<Order> GetOrderByIdAsync(int orderId);
         Task<Order> UpdateOrderAsync(Order order);
         Task<List<Order>> GetOrdersByStatusAsync(OrderStatus status);
+        Task<List<Order>> GetOrdersByDeliveryManAsync(int deliveryManId);
     }
 }

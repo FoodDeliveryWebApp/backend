@@ -13,6 +13,7 @@ namespace Explorer.Stakeholders.Core.Domain
         Accepted,    // Accepted by worker, being prepared
         Rejected,    // Rejected by worker
         Preparing,   // Being prepared (legacy / alternative to Accepted)
+        ToPickUp,    // Claimed by a delivery man, will pick up soon
         InDelivery,  // Picked up by delivery person
         Delivered,   // Successfully delivered
         Canceled,    // Canceled by guest
@@ -27,8 +28,10 @@ namespace Explorer.Stakeholders.Core.Domain
         public int UserId { get; private set; }
         public List<Food> Foods { get; private set; }
         public DateTime OrderTime { get; private set; }
-        public OrderStatus Status { get;  set; }
+        public OrderStatus Status { get; set; }
         public decimal TotalPrice => Foods.Sum(f => f.Price);
+        public int DeliveryPrice => Foods.Sum(f => f.DeliveryPrice);
+        public int? DeliveryManId { get; private set; }
         public string Note { get; private set; }
         public string DeliveryAddress { get; private set; }
         public string PhoneNumber { get; private set; }
@@ -48,6 +51,11 @@ namespace Explorer.Stakeholders.Core.Domain
             Validate();
         }
 
+        public void AssignDeliveryMan(int deliveryManId)
+        {
+            DeliveryManId = deliveryManId;
+        }
+
         private void Validate()
         {
             if (UserId == 0) throw new ArgumentException("Invalid user ID.");
@@ -56,7 +64,5 @@ namespace Explorer.Stakeholders.Core.Domain
             if (string.IsNullOrWhiteSpace(DeliveryAddress)) throw new ArgumentException("Delivery address is required.");
             if (string.IsNullOrWhiteSpace(PhoneNumber)) throw new ArgumentException("Phone number is required.");
         }
-
-     
     }
 }

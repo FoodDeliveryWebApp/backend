@@ -61,6 +61,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             var food = new Food(
                 foodDto.Name!,
                 foodDto.Price,
+                foodDto.DeliveryPrice,
                 foodDto.Description!,
                 foodDto.ImageUrl!,
                 foodDto.RestaurantId

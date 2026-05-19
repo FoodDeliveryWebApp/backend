@@ -56,5 +56,13 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
                 .Where(o => o.Status == status)
                 .ToListAsync();
         }
+
+        public async Task<List<Order>> GetOrdersByDeliveryManAsync(int deliveryManId)
+        {
+            return await _context.Orders
+                .Include(o => o.Foods)
+                .Where(o => o.DeliveryManId == deliveryManId)
+                .ToListAsync();
+        }
     }
 }

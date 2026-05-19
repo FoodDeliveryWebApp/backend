@@ -32,6 +32,7 @@ namespace Explorer.Stakeholders.Core.UseCases
                 Id = f.Id,
                 Name = f.Name,
                 Price = f.Price,
+                DeliveryPrice = f.DeliveryPrice,
                 Description = f.Description,
                 ImageUrl = f.ImageUrl,
                 RestaurantId = f.RestaurantId
@@ -39,6 +40,8 @@ namespace Explorer.Stakeholders.Core.UseCases
             OrderTime = order.OrderTime,
             Status = order.Status.ToString(),
             TotalPrice = order.TotalPrice,
+            DeliveryPrice = order.DeliveryPrice,
+            DeliveryManId = order.DeliveryManId,
             Note = order.Note,
             DeliveryAddress = order.DeliveryAddress,
             PhoneNumber = order.PhoneNumber
@@ -144,28 +147,25 @@ namespace Explorer.Stakeholders.Core.UseCases
         }
 
 
-        public async Task<OrderDto> UpdateOrderStatus(int orderId, string newStatusString)
+        public async Task<OrderDto> UpdateOrderStatus(int orderId, string newStatusString, int? actorId = null)
         {
-            // Step 1: Fetch the order by ID
             var order = await _orderRepository.GetOrderByIdAsync(orderId);
             if (order == null)
-            {
                 throw new ArgumentException("Order not found");
-            }
-           
+
             if (!Enum.TryParse<OrderStatus>(newStatusString, out var newStatus))
-            {
-                throw new ArgumentException($"Invalid approval status: {newStatusString}");
-            }
+                throw new ArgumentException($"Invalid status: {newStatusString}");
 
-            // Step 2: Check if the status is valid for this worker
-            
             if (order.Status == OrderStatus.Rejected)
-            {
                 throw new InvalidOperationException("This order has already been rejected and cannot be updated.");
+
+            if (newStatus == OrderStatus.ToPickUp)
+            {
+                if (actorId == null)
+                    throw new ArgumentException("Delivery man ID required when claiming an order.");
+                order.AssignDeliveryMan(actorId.Value);
             }
 
-            // Step 3: Update the approval status
             order.Status = newStatus;
 
             var updatedOrder = await _orderRepository.UpdateOrderAsync(order);
@@ -175,7 +175,16 @@ namespace Explorer.Stakeholders.Core.UseCases
         public async Task<List<OrderDto>> GetOrdersForDeliveryAsync()
         {
             var orders = await _orderRepository.GetOrdersByStatusAsync(OrderStatus.Accepted);
-            return orders.Select(MapToDto).ToList();
+            return orders.Where(o => o.DeliveryManId == null).Select(MapToDto).ToList();
+        }
+
+        public async Task<(List<OrderDto> Orders, int TotalEarnings)> GetOrdersByDeliveryManAsync(int deliveryManId)
+        {
+            var orders = await _orderRepository.GetOrdersByDeliveryManAsync(deliveryManId);
+            var totalEarnings = orders
+                .Where(o => o.Status == OrderStatus.Delivered)
+                .Sum(o => o.DeliveryPrice);
+            return (orders.Select(MapToDto).ToList(), totalEarnings);
         }
     }
 
