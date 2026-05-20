@@ -26,11 +26,11 @@ namespace Explorer.Stakeholders.Core.Domain
     public class Order : Entity
     {
         public int UserId { get; private set; }
-        public List<Food> Foods { get; private set; }
+        public List<OrderItem> Items { get; private set; }
         public DateTime OrderTime { get; private set; }
         public OrderStatus Status { get; set; }
-        public decimal TotalPrice => Foods.Sum(f => f.Price);
-        public int DeliveryPrice => Foods.Sum(f => f.DeliveryPrice);
+        public decimal TotalPrice => Items.Sum(i => i.Food.Price * i.Quantity);
+        public int DeliveryPrice => Items.Any() ? Items.Max(i => i.Food.DeliveryPrice) : 0;
         public int? DeliveryManId { get; private set; }
         public string Note { get; private set; }
         public string DeliveryAddress { get; private set; }
@@ -38,10 +38,10 @@ namespace Explorer.Stakeholders.Core.Domain
 
         protected Order() { }
 
-        public Order(int userId, List<Food> foods, OrderStatus status, string deliveryAddress, string phoneNumber, string note = "")
+        public Order(int userId, List<OrderItem> items, OrderStatus status, string deliveryAddress, string phoneNumber, string note = "")
         {
             UserId = userId;
-            Foods = foods ?? throw new ArgumentNullException(nameof(foods));
+            Items = items ?? throw new ArgumentNullException(nameof(items));
             Status = status;
             OrderTime = DateTime.UtcNow;
             Note = note;
@@ -59,7 +59,7 @@ namespace Explorer.Stakeholders.Core.Domain
         private void Validate()
         {
             if (UserId == 0) throw new ArgumentException("Invalid user ID.");
-            if (Foods == null || Foods.Count == 0) throw new ArgumentException("Order must contain at least one food item.");
+            if (Items == null || Items.Count == 0) throw new ArgumentException("Order must contain at least one food item.");
             if (Note.Length > 500) throw new ArgumentException("Note is too long (max 500 characters).");
             if (string.IsNullOrWhiteSpace(DeliveryAddress)) throw new ArgumentException("Delivery address is required.");
             if (string.IsNullOrWhiteSpace(PhoneNumber)) throw new ArgumentException("Phone number is required.");

@@ -27,16 +27,16 @@ namespace Explorer.Stakeholders.Core.UseCases
         {
             Id = order.Id,
             UserId = order.UserId,
-            Foods = order.Foods.Select(f => new FoodDto
+            Foods = order.Items.SelectMany(i => Enumerable.Repeat(new FoodDto
             {
-                Id = f.Id,
-                Name = f.Name,
-                Price = f.Price,
-                DeliveryPrice = f.DeliveryPrice,
-                Description = f.Description,
-                ImageUrl = f.ImageUrl,
-                RestaurantId = f.RestaurantId
-            }).ToList(),
+                Id = i.Food.Id,
+                Name = i.Food.Name,
+                Price = i.Food.Price,
+                DeliveryPrice = i.Food.DeliveryPrice,
+                Description = i.Food.Description,
+                ImageUrl = i.Food.ImageUrl,
+                RestaurantId = i.Food.RestaurantId
+            }, i.Quantity)).ToList(),
             OrderTime = order.OrderTime,
             Status = order.Status.ToString(),
             TotalPrice = order.TotalPrice,
@@ -64,13 +64,13 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             // Filtriraj porudžbine koje pripadaju restoranima ovog menadžera
             var managerOrders = orders.Where(o =>
-                o.Foods.Any(f => restaurantIds.Contains(f.RestaurantId))
+                o.Items.Any(i => restaurantIds.Contains(i.Food.RestaurantId))
             ).ToList();
 
             // Računaj ukupnu zaradu samo od Delivered porudžbina
             decimal totalEarnings = managerOrders
                 .Where(o => o.Status == OrderStatus.Delivered)
-                .Sum(o => o.Foods.Where(f => restaurantIds.Contains(f.RestaurantId)).Sum(f => f.Price));
+                .Sum(o => o.Items.Where(i => restaurantIds.Contains(i.Food.RestaurantId)).Sum(i => i.Food.Price * i.Quantity));
 
             var orderDtos = managerOrders.Select(MapToDto).ToList();
 
@@ -80,15 +80,22 @@ namespace Explorer.Stakeholders.Core.UseCases
 
         public async Task<OrderDto> CreateOrderAsync(OrderDto orderDto)
         {
-            var foodIds = orderDto.Foods.Select(f => f.Id);
-            var foods = await _foodRepository.GetByIdsAsync(foodIds);
+            var distinctIds = orderDto.Foods.Select(f => f.Id).Distinct();
+            var foodEntities = await _foodRepository.GetByIdsAsync(distinctIds);
 
-            if (foods.Count == 0)
+            if (foodEntities.Count == 0)
                 throw new ArgumentException("None of the requested food items were found.");
+
+            var foodMap = foodEntities.ToDictionary(f => f.Id);
+            var items = orderDto.Foods
+                .GroupBy(f => f.Id)
+                .Where(g => foodMap.ContainsKey(g.Key))
+                .Select(g => new OrderItem(g.Key, g.Count(), foodMap[g.Key]))
+                .ToList();
 
             var order = new Order(
                 userId: orderDto.UserId,
-                foods: foods,
+                items: items,
                 status: OrderStatus.Pending,
                 deliveryAddress: orderDto.DeliveryAddress!,
                 phoneNumber: orderDto.PhoneNumber!,
@@ -110,12 +117,11 @@ namespace Explorer.Stakeholders.Core.UseCases
 
             foreach (var order in orders)
             {
-                foreach (var food in order.Foods)
+                foreach (var item in order.Items)
                 {
-                    var restaurant = await _restaurantRepository.GetRestaurantById(food.RestaurantId); // Await the method to get the restaurant.
-                    if (restaurant.Workers.Any(worker => worker.Id == workerId)) // Check if the worker is in the restaurant's worker list.
+                    var restaurant = await _restaurantRepository.GetRestaurantById(item.Food.RestaurantId);
+                    if (restaurant.Workers.Any(worker => worker.Id == workerId))
                     {
-                        // Convert order to OrderDto and add it to the filtered list
                         filteredOrders.Add(MapToDto(order));
                         break;
                     }

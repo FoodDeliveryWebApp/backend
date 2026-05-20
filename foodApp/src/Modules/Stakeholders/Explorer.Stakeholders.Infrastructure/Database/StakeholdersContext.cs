@@ -9,6 +9,7 @@ public class StakeholdersContext : DbContext
     public DbSet<Restaurant> Restaurants { get; set; }
     public DbSet<Food> Foods { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<RestaurantRating> RestaurantRatings { get; set; }
 
     public DbSet<RatingReport> RatingReports { get; set; }
@@ -85,6 +86,23 @@ private static void SeedData(ModelBuilder modelBuilder)
             new { Id = 3, UserId = 21, OrderTime = new DateTime(2024, 3, 3, 19, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Preparing,  Note = "No onions",            DeliveryAddress = "Dunavska 3, Novi Sad",               PhoneNumber = "060-111-1111" },
             new { Id = 4, UserId = 23, OrderTime = new DateTime(2024, 3, 4, 20, 15, 0, DateTimeKind.Utc), Status = OrderStatus.PickUp,     Note = "",                     DeliveryAddress = "Laze Teleckog 1, Novi Sad",          PhoneNumber = "062-333-3333" },
             new { Id = 5, UserId = 22, OrderTime = new DateTime(2024, 3, 5, 11, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Rejected,   Note = "Allergy to nuts",      DeliveryAddress = "Zmaj Jovina 5, Novi Sad",            PhoneNumber = "061-222-2222" }
+        );
+
+        // OrderId + FoodId are explicit FKs on OrderItem
+        modelBuilder.Entity<OrderItem>().HasData(
+            // Order 1 (gost1, Delivered): Margherita x1 + Tiramisu x1 — Restaurant 1
+            new { Id = 1, OrderId = 1, FoodId = 1, Quantity = 1 },
+            new { Id = 2, OrderId = 1, FoodId = 3, Quantity = 1 },
+            // Order 2 (gost2, Delivered): Kung Pao Chicken x1 + Spring Rolls x1 — Restaurant 2
+            new { Id = 3, OrderId = 2, FoodId = 4, Quantity = 1 },
+            new { Id = 4, OrderId = 2, FoodId = 5, Quantity = 1 },
+            // Order 3 (gost1, Preparing): Rostilj Mix x1 — Restaurant 3
+            new { Id = 5, OrderId = 3, FoodId = 7, Quantity = 1 },
+            // Order 4 (gost3, PickUp): Pepperoni x2 — Restaurant 1
+            new { Id = 6, OrderId = 4, FoodId = 2, Quantity = 2 },
+            // Order 5 (gost2, Rejected): Riblja Corba x1 + Gibanica x1 — Restaurant 3
+            new { Id = 7, OrderId = 5, FoodId = 8, Quantity = 1 },
+            new { Id = 8, OrderId = 5, FoodId = 9, Quantity = 1 }
         );
 
         // RatedById and RestaurantId are shadow FKs from navigation properties
@@ -225,10 +243,16 @@ private static void SeedData(ModelBuilder modelBuilder)
             .Property(o => o.DeliveryManId)
             .IsRequired(false);
 
-        // Many-to-many relationship between Order and Food
         modelBuilder.Entity<Order>()
-            .HasMany(o => o.Foods)
-            .WithMany();
+            .HasMany(o => o.Items)
+            .WithOne()
+            .HasForeignKey(i => i.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(i => i.Food)
+            .WithMany()
+            .HasForeignKey(i => i.FoodId);
     }
 
     private static void ConfigureOrderReport(ModelBuilder modelBuilder)

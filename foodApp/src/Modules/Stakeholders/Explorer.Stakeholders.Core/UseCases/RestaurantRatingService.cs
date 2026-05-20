@@ -49,7 +49,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             var guestOrders = await _orderRepository.GetOrdersByStatusAsync(OrderStatus.Delivered);
             var hasOrderedFromRestaurant = guestOrders.Any(o =>
                 o.UserId == dto.RatedByUserId &&
-                o.Foods.Any(f => f.RestaurantId == dto.RestaurantId));
+                o.Items.Any(i => i.Food.RestaurantId == dto.RestaurantId));
 
             if (!hasOrderedFromRestaurant)
                 return Result.Fail("You can only rate a restaurant after a delivered order from it.");

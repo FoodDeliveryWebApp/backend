@@ -30,7 +30,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         {
             // Return all orders from the database
             return await _context.Orders
-                .Include(o => o.Foods)  // Assuming 'Foods' is a navigation property
+                .Include(o => o.Items).ThenInclude(i => i.Food)  // Assuming 'Foods' is a navigation property
                 .ToListAsync();
         }
 
@@ -38,7 +38,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         {
             // Find order by ID, including its related entities
             return await _context.Orders
-                .Include(o => o.Foods)
+                .Include(o => o.Items).ThenInclude(i => i.Food)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }
 
@@ -52,7 +52,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         public async Task<List<Order>> GetOrdersByStatusAsync(OrderStatus status)
         {
             return await _context.Orders
-                .Include(o => o.Foods)
+                .Include(o => o.Items).ThenInclude(i => i.Food)
                 .Where(o => o.Status == status)
                 .ToListAsync();
         }
@@ -60,7 +60,7 @@ namespace Explorer.Stakeholders.Infrastructure.Database.Repositories
         public async Task<List<Order>> GetOrdersByDeliveryManAsync(int deliveryManId)
         {
             return await _context.Orders
-                .Include(o => o.Foods)
+                .Include(o => o.Items).ThenInclude(i => i.Food)
                 .Where(o => o.DeliveryManId == deliveryManId)
                 .ToListAsync();
         }
