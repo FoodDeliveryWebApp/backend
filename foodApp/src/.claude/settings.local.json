@@ -10,7 +10,26 @@
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\" -Recurse -Directory | Select-Object -First 50 | ForEach-Object { $_.FullName -replace [regex]::Escape\\(\"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\"\\), \"\" })",
       "PowerShell(head *)",
       "Read(//c/Users/Veljko/Desktop/diplomski/frontend/frontend/foodAppFrontend/**)",
-      "Bash(npx ng *)"
+      "Bash(npx ng *)",
+      "Bash(Get-ChildItem *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\\" -Recurse -Depth 3 | Where-Object { $_.Name -eq \"appsettings.json\" -or $_.Name -eq \"launchSettings.json\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\\" -Recurse -Depth 3 | Where-Object { $_.Name -match \"docker\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\backend\\\\foodApp\\\\src\\\\\" -Recurse -Depth 4 | Where-Object { $_.Name -match \"appsettings|launchSettings\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\backend\\\\foodApp\\\\src\\\\\" -Directory -Depth 2 | Where-Object { $_.Name -match \"Explorer\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\backend\\\\foodApp\\\\src\\\\\" -Recurse | Where-Object { $_.Name -match \"appsettings|Dockerfile|docker-compose\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\\\\frontend\\\\foodAppFrontend\\\\src\\\\\" -Recurse | Where-Object { $_.Name -eq \"app.config.ts\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\\\\frontend\\\\foodAppFrontend\\\\\" | Where-Object { $_.Name -match \"proxy|vite\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\\\\frontend\\\\foodAppFrontend\\\\\" -Recurse | Where-Object { $_.Name -match \"proxy\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\\" -Recurse | Where-Object { $_.Name -match \"^\\(Dockerfile|docker-compose\\)\" } | Select-Object FullName)",
+      "Bash(xargs cat)",
+      "Bash(dockerignore\")",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\\" -Name; Write-Host \"---\"; Get-ChildItem \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\\\\frontend\\\\foodAppFrontend\\\\\" | Where-Object { $_.Name -match \"Dockerfile|nginx|dockerignore\" } | Select-Object -ExpandProperty Name; Write-Host \"---\"; Get-ChildItem \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\backend\\\\foodApp\\\\src\\\\\" | Where-Object { $_.Name -match \"Dockerfile|dockerignore\" } | Select-Object -ExpandProperty Name)",
+      "Bash(docker compose *)",
+      "Bash(git -C \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\backend\\\\foodApp\" remote -v)",
+      "Bash(git -C \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\\\\frontend\\\\foodAppFrontend\" remote -v)",
+      "Bash(git -C \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\backend\\\\backend\\\\foodApp\" rev-parse --show-toplevel)",
+      "Bash(git -C \"C:\\\\Users\\\\Veljko\\\\Desktop\\\\diplomski\\\\frontend\\\\frontend\\\\foodAppFrontend\" rev-parse --show-toplevel)",
+      "Bash(Remove-Item *)"
     ]
   }
 }
