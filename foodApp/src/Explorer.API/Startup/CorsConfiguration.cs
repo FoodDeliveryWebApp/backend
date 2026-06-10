@@ -21,13 +21,12 @@ public static class CorsConfiguration
 
     private static string[] ParseCorsOrigins()
     {
-        var corsOrigins = new[] { "http://localhost:4201", "http://localhost" };
-        var corsOriginsPath = Environment.GetEnvironmentVariable("EXPLORER_CORS_ORIGINS");
-        if (File.Exists(corsOriginsPath))
+        var corsOriginsEnv = Environment.GetEnvironmentVariable("EXPLORER_CORS_ORIGINS");
+        if (!string.IsNullOrEmpty(corsOriginsEnv))
         {
-            corsOrigins = File.ReadAllLines(corsOriginsPath);
+            return corsOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
 
-        return corsOrigins;
+        return new[] { "http://localhost:4201", "http://localhost" };
     }
 }
