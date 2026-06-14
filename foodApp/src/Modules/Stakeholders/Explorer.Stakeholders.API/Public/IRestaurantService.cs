@@ -18,6 +18,7 @@ namespace Explorer.Stakeholders.API.Public
         Task<Result> RemoveWorkerAsync(int restaurantId, int workerId);
         Task<Result> UpdateWorkerAsync(int restaurantId, int workerId, UserDto dto);
         Task<Result<RestaurantDto>> UpdateRestaurantAsync(int id, RestaurantDto dto);
+        Task<Result> UpdateDeliveryFeeAsync(int restaurantId, int deliveryFee);
         Task<Result> DeleteRestaurantAsync(int id);
     }
 }

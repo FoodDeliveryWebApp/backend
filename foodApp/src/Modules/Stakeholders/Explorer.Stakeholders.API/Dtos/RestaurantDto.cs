@@ -8,13 +8,14 @@ namespace Explorer.Stakeholders.API.Dtos
 {
     public class RestaurantDto
     {
-        public int Id { get; set; }  // Id restorana
-        public string Name { get; set; }  // Naziv restorana
-        public string Address { get; set; }  // Adresa restorana
-        public string PhoneNumber { get; set; }  // Broj telefona restorana
-        public bool IsActive { get; set; }  // Status restorana (da li je aktivan)
-        public string Cuisine { get; set; }  // Tip kuhinje (npr. Italijanska, Kineska...)
-        public string ImageUrl { get; set; }  // URL slike restorana
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool IsActive { get; set; }
+        public string Cuisine { get; set; }
+        public string ImageUrl { get; set; }
+        public int DeliveryFee { get; set; }
 
         public UserDto Manager { get; set; }
 

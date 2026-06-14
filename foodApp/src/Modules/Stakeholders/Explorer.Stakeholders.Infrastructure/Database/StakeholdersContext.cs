@@ -62,30 +62,30 @@ private static void SeedData(ModelBuilder modelBuilder)
         // CuisineType stored as int (no HasConversion): Italian=0, Chinese=1, Serbian=2
         // ManagerId is a shadow FK property generated from the Manager navigation
         modelBuilder.Entity<Restaurant>().HasData(
-            new { Id = 1, Name = "Pizzeria Roma", Address = "Bulevar Oslobodjenja 1, Novi Sad", PhoneNumber = "021-555-001", IsActive = true, Cuisine = CuisineType.Italian, ImageUrl = "images/restaurants/roma.jpg",         ManagerId = 2 },
-            new { Id = 2, Name = "Kineski Zid",   Address = "Zmaj Jovina 10, Novi Sad",         PhoneNumber = "021-555-002", IsActive = true, Cuisine = CuisineType.Chinese, ImageUrl = "images/restaurants/chinese_rest.jpg", ManagerId = 3 },
-            new { Id = 3, Name = "Srpska Kafana", Address = "Dunavska 5, Novi Sad",             PhoneNumber = "021-555-003", IsActive = true, Cuisine = CuisineType.Serbian, ImageUrl = "images/restaurants/kafana.jpg",       ManagerId = 4 }
+            new { Id = 1, Name = "Pizzeria Roma", Address = "Bulevar Oslobodjenja 1, Novi Sad", PhoneNumber = "021-555-001", IsActive = true, Cuisine = CuisineType.Italian, ImageUrl = "images/restaurants/roma.jpg",         DeliveryFee = 100, ManagerId = 2 },
+            new { Id = 2, Name = "Kineski Zid",   Address = "Zmaj Jovina 10, Novi Sad",         PhoneNumber = "021-555-002", IsActive = true, Cuisine = CuisineType.Chinese, ImageUrl = "images/restaurants/chinese_rest.jpg", DeliveryFee = 120, ManagerId = 3 },
+            new { Id = 3, Name = "Srpska Kafana", Address = "Dunavska 5, Novi Sad",             PhoneNumber = "021-555-003", IsActive = true, Cuisine = CuisineType.Serbian, ImageUrl = "images/restaurants/kafana.jpg",       DeliveryFee = 150, ManagerId = 4 }
         );
 
         modelBuilder.Entity<Food>().HasData(
-            new { Id = 1, Name = "Margherita",       Price = 800.00m,  DeliveryPrice = 100, Description = "Classic tomato and mozzarella pizza",    ImageUrl = "images/foods/margarita.jpg",        RestaurantId = 1 },
-            new { Id = 2, Name = "Pepperoni",        Price = 950.00m,  DeliveryPrice = 100, Description = "Pizza with pepperoni and mozzarella",    ImageUrl = "images/foods/peperoni.jpg",         RestaurantId = 1 },
-            new { Id = 3, Name = "Tiramisu",         Price = 450.00m,  DeliveryPrice =  80, Description = "Traditional Italian dessert",            ImageUrl = "images/foods/tiramisu.jpg",         RestaurantId = 1 },
-            new { Id = 4, Name = "Kung Pao Chicken", Price = 700.00m,  DeliveryPrice = 120, Description = "Spicy stir-fried chicken with peanuts",  ImageUrl = "images/foods/kung-pao-chicken.jpg", RestaurantId = 2 },
-            new { Id = 5, Name = "Spring Rolls",     Price = 400.00m,  DeliveryPrice =  80, Description = "Crispy vegetable spring rolls",          ImageUrl = "images/foods/spring_roles.jpg",     RestaurantId = 2 },
-            new { Id = 6, Name = "Fried Rice",       Price = 550.00m,  DeliveryPrice =  90, Description = "Classic Chinese fried rice",             ImageUrl = "images/foods/fried_rice.jpg",       RestaurantId = 2 },
-            new { Id = 7, Name = "Rostilj Mix",      Price = 1200.00m, DeliveryPrice = 150, Description = "Mixed grill platter with sides",         ImageUrl = "images/foods/rostilj.jpg",          RestaurantId = 3 },
-            new { Id = 8, Name = "Riblja Corba",     Price = 600.00m,  DeliveryPrice = 100, Description = "Traditional Serbian fish soup",          ImageUrl = "images/foods/riblja-corba.jpg",     RestaurantId = 3 },
-            new { Id = 9, Name = "Gibanica",         Price = 350.00m,  DeliveryPrice =  70, Description = "Serbian cheese pie",                     ImageUrl = "images/foods/gibanica.jpg",         RestaurantId = 3 }
+            new { Id = 1, Name = "Margherita",       Price = 800.00m,  Description = "Classic tomato and mozzarella pizza",    ImageUrl = "images/foods/margarita.jpg",        RestaurantId = 1 },
+            new { Id = 2, Name = "Pepperoni",        Price = 950.00m,  Description = "Pizza with pepperoni and mozzarella",    ImageUrl = "images/foods/peperoni.jpg",         RestaurantId = 1 },
+            new { Id = 3, Name = "Tiramisu",         Price = 450.00m,  Description = "Traditional Italian dessert",            ImageUrl = "images/foods/tiramisu.jpg",         RestaurantId = 1 },
+            new { Id = 4, Name = "Kung Pao Chicken", Price = 700.00m,  Description = "Spicy stir-fried chicken with peanuts",  ImageUrl = "images/foods/kung-pao-chicken.jpg", RestaurantId = 2 },
+            new { Id = 5, Name = "Spring Rolls",     Price = 400.00m,  Description = "Crispy vegetable spring rolls",          ImageUrl = "images/foods/spring_roles.jpg",     RestaurantId = 2 },
+            new { Id = 6, Name = "Fried Rice",       Price = 550.00m,  Description = "Classic Chinese fried rice",             ImageUrl = "images/foods/fried_rice.jpg",       RestaurantId = 2 },
+            new { Id = 7, Name = "Rostilj Mix",      Price = 1200.00m, Description = "Mixed grill platter with sides",         ImageUrl = "images/foods/rostilj.jpg",          RestaurantId = 3 },
+            new { Id = 8, Name = "Riblja Corba",     Price = 600.00m,  Description = "Traditional Serbian fish soup",          ImageUrl = "images/foods/riblja-corba.jpg",     RestaurantId = 3 },
+            new { Id = 9, Name = "Gibanica",         Price = 350.00m,  Description = "Serbian cheese pie",                     ImageUrl = "images/foods/gibanica.jpg",         RestaurantId = 3 }
         );
 
-        // OrderStatus stored as string (HasConversion<string>)
+        // OrderStatus stored as string (HasConversion<string>); DeliveryPrice is the restaurant's fee locked at order creation time
         modelBuilder.Entity<Order>().HasData(
-            new { Id = 1, UserId = 21, OrderTime = new DateTime(2024, 3, 1, 12, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  Note = "Extra napkins please", DeliveryAddress = "Bulevar Oslobodjenja 10, Novi Sad", PhoneNumber = "060-111-1111" },
-            new { Id = 2, UserId = 22, OrderTime = new DateTime(2024, 3, 2, 13, 30, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  Note = "",                     DeliveryAddress = "Zmaj Jovina 5, Novi Sad",            PhoneNumber = "061-222-2222" },
-            new { Id = 3, UserId = 21, OrderTime = new DateTime(2024, 3, 3, 19, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Preparing,  Note = "No onions",            DeliveryAddress = "Dunavska 3, Novi Sad",               PhoneNumber = "060-111-1111" },
-            new { Id = 4, UserId = 23, OrderTime = new DateTime(2024, 3, 4, 20, 15, 0, DateTimeKind.Utc), Status = OrderStatus.PickUp,     Note = "",                     DeliveryAddress = "Laze Teleckog 1, Novi Sad",          PhoneNumber = "062-333-3333" },
-            new { Id = 5, UserId = 22, OrderTime = new DateTime(2024, 3, 5, 11, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Rejected,   Note = "Allergy to nuts",      DeliveryAddress = "Zmaj Jovina 5, Novi Sad",            PhoneNumber = "061-222-2222" }
+            new { Id = 1, UserId = 21, OrderTime = new DateTime(2024, 3, 1, 12, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  DeliveryPrice = 100, Note = "Extra napkins please", DeliveryAddress = "Bulevar Oslobodjenja 10, Novi Sad", PhoneNumber = "060-111-1111" },
+            new { Id = 2, UserId = 22, OrderTime = new DateTime(2024, 3, 2, 13, 30, 0, DateTimeKind.Utc), Status = OrderStatus.Delivered,  DeliveryPrice = 120, Note = "",                     DeliveryAddress = "Zmaj Jovina 5, Novi Sad",            PhoneNumber = "061-222-2222" },
+            new { Id = 3, UserId = 21, OrderTime = new DateTime(2024, 3, 3, 19, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Preparing,  DeliveryPrice = 150, Note = "No onions",            DeliveryAddress = "Dunavska 3, Novi Sad",               PhoneNumber = "060-111-1111" },
+            new { Id = 4, UserId = 23, OrderTime = new DateTime(2024, 3, 4, 20, 15, 0, DateTimeKind.Utc), Status = OrderStatus.PickUp,     DeliveryPrice = 100, Note = "",                     DeliveryAddress = "Laze Teleckog 1, Novi Sad",          PhoneNumber = "062-333-3333" },
+            new { Id = 5, UserId = 22, OrderTime = new DateTime(2024, 3, 5, 11, 0, 0, DateTimeKind.Utc), Status = OrderStatus.Rejected,   DeliveryPrice = 150, Note = "Allergy to nuts",      DeliveryAddress = "Zmaj Jovina 5, Novi Sad",            PhoneNumber = "061-222-2222" }
         );
 
         // OrderId + FoodId are explicit FKs on OrderItem
@@ -171,6 +171,10 @@ private static void SeedData(ModelBuilder modelBuilder)
             .IsRequired();
 
         modelBuilder.Entity<Restaurant>()
+            .Property(r => r.DeliveryFee)
+            .IsRequired();
+
+        modelBuilder.Entity<Restaurant>()
             .HasMany(r => r.Foods)
             .WithOne()
             .HasForeignKey(f => f.RestaurantId)
@@ -195,10 +199,6 @@ private static void SeedData(ModelBuilder modelBuilder)
             .Property(f => f.Price)
             .IsRequired()
             .HasColumnType("decimal(18,2)");
-
-        modelBuilder.Entity<Food>()
-            .Property(f => f.DeliveryPrice)
-            .IsRequired();
 
         modelBuilder.Entity<Food>()
             .Property(f => f.ImageUrl)
@@ -237,6 +237,10 @@ private static void SeedData(ModelBuilder modelBuilder)
 
         modelBuilder.Entity<Order>()
             .Property(o => o.PhoneNumber)
+            .IsRequired();
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.DeliveryPrice)
             .IsRequired();
 
         modelBuilder.Entity<Order>()

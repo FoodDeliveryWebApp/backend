@@ -15,6 +15,7 @@ namespace Explorer.Stakeholders.Core.Domain
         public bool IsActive { get; set; }
         public CuisineType Cuisine { get; private set; }
         public string ImageUrl { get; private set; }
+        public int DeliveryFee { get; private set; }
         public List<Food> Foods { get; private set; } = new();
         public List<User> Workers { get; private set; } = new();
 
@@ -22,7 +23,7 @@ namespace Explorer.Stakeholders.Core.Domain
 
         protected Restaurant() { }
 
-        public Restaurant(string name, string address, string phoneNumber, bool isActive, CuisineType cuisine, string imageUrl)
+        public Restaurant(string name, string address, string phoneNumber, bool isActive, CuisineType cuisine, string imageUrl, int deliveryFee = 0)
         {
             Name = name;
             Address = address;
@@ -30,6 +31,7 @@ namespace Explorer.Stakeholders.Core.Domain
             IsActive = isActive;
             Cuisine = cuisine;
             ImageUrl = imageUrl;
+            DeliveryFee = deliveryFee;
             Validate();
         }
 
@@ -46,7 +48,7 @@ namespace Explorer.Stakeholders.Core.Domain
             Manager = manager ?? throw new ArgumentNullException(nameof(manager));
         }
 
-        public void Update(string name, string address, string phoneNumber, bool isActive, CuisineType cuisine, string imageUrl)
+        public void Update(string name, string address, string phoneNumber, bool isActive, CuisineType cuisine, string imageUrl, int deliveryFee)
         {
             Name = name;
             Address = address;
@@ -54,7 +56,13 @@ namespace Explorer.Stakeholders.Core.Domain
             IsActive = isActive;
             Cuisine = cuisine;
             ImageUrl = imageUrl;
+            DeliveryFee = deliveryFee;
             Validate();
+        }
+
+        public void UpdateDeliveryFee(int deliveryFee)
+        {
+            DeliveryFee = deliveryFee;
         }
 
         public string GetCuisineTypeName()

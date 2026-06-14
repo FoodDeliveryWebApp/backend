@@ -30,7 +30,7 @@ namespace Explorer.Stakeholders.Core.Domain
         public DateTime OrderTime { get; private set; }
         public OrderStatus Status { get; set; }
         public decimal TotalPrice => Items.Sum(i => i.Food.Price * i.Quantity);
-        public int DeliveryPrice => Items.Any() ? Items.Max(i => i.Food.DeliveryPrice) : 0;
+        public int DeliveryPrice { get; private set; }
         public int? DeliveryManId { get; private set; }
         public string Note { get; private set; }
         public string DeliveryAddress { get; private set; }
@@ -38,7 +38,7 @@ namespace Explorer.Stakeholders.Core.Domain
 
         protected Order() { }
 
-        public Order(int userId, List<OrderItem> items, OrderStatus status, string deliveryAddress, string phoneNumber, string note = "")
+        public Order(int userId, List<OrderItem> items, OrderStatus status, string deliveryAddress, string phoneNumber, int deliveryPrice = 0, string note = "")
         {
             UserId = userId;
             Items = items ?? throw new ArgumentNullException(nameof(items));
@@ -47,6 +47,7 @@ namespace Explorer.Stakeholders.Core.Domain
             Note = note;
             DeliveryAddress = deliveryAddress;
             PhoneNumber = phoneNumber;
+            DeliveryPrice = deliveryPrice;
 
             Validate();
         }
