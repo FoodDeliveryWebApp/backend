@@ -76,6 +76,14 @@ namespace Explorer.API.Controllers
             return CreateResponse(result);
         }
 
+        [HttpPut("{id}/delivery-fee")]
+        [Authorize(Roles = "administrator,manager")]
+        public async Task<ActionResult> UpdateDeliveryFee(int id, [FromBody] int deliveryFee)
+        {
+            var result = await _restaurantService.UpdateDeliveryFeeAsync(id, deliveryFee);
+            return CreateResponse(result);
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "administrator")]
         public async Task<ActionResult<RestaurantDto>> UpdateRestaurant(int id, [FromBody] RestaurantDto dto)

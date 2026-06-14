@@ -33,7 +33,6 @@ namespace Explorer.Stakeholders.Core.UseCases
                 Id = f.Id,
                 Name = f.Name,
                 Price = f.Price,
-                DeliveryPrice = f.DeliveryPrice,
                 Description = f.Description,
                 ImageUrl = f.ImageUrl,
                 RestaurantId = f.RestaurantId
@@ -47,7 +46,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             var food = await _foodRepository.GetByIdAsync(foodId);
             if (food == null) return Result.Fail("Food item not found.");
 
-            food.Update(dto.Name!, dto.Price, dto.DeliveryPrice, dto.Description!, dto.ImageUrl!);
+            food.Update(dto.Name!, dto.Price, dto.Description!, dto.ImageUrl!);
             await _foodRepository.UpdateAsync(food);
 
             return Result.Ok();

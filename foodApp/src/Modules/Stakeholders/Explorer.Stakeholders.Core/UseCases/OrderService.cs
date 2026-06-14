@@ -32,7 +32,6 @@ namespace Explorer.Stakeholders.Core.UseCases
                 Id = i.Food.Id,
                 Name = i.Food.Name,
                 Price = i.Food.Price,
-                DeliveryPrice = i.Food.DeliveryPrice,
                 Description = i.Food.Description,
                 ImageUrl = i.Food.ImageUrl,
                 RestaurantId = i.Food.RestaurantId
@@ -93,12 +92,17 @@ namespace Explorer.Stakeholders.Core.UseCases
                 .Select(g => new OrderItem(g.Key, g.Count(), foodMap[g.Key]))
                 .ToList();
 
+            var restaurantId = items.First().Food.RestaurantId;
+            var restaurant = await _restaurantRepository.GetRestaurantById(restaurantId);
+            var deliveryFee = restaurant?.DeliveryFee ?? 0;
+
             var order = new Order(
                 userId: orderDto.UserId,
                 items: items,
                 status: OrderStatus.Pending,
                 deliveryAddress: orderDto.DeliveryAddress!,
                 phoneNumber: orderDto.PhoneNumber!,
+                deliveryPrice: deliveryFee,
                 note: orderDto.Note ?? ""
             );
 

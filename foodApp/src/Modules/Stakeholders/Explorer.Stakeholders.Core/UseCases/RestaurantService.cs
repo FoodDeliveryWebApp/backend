@@ -61,7 +61,6 @@ namespace Explorer.Stakeholders.Core.UseCases
             var food = new Food(
                 foodDto.Name!,
                 foodDto.Price,
-                foodDto.DeliveryPrice,
                 foodDto.Description!,
                 foodDto.ImageUrl!,
                 foodDto.RestaurantId
@@ -109,6 +108,7 @@ namespace Explorer.Stakeholders.Core.UseCases
                     IsActive = r.IsActive,
                     Cuisine = r.GetCuisineTypeName(),
                     ImageUrl = r.ImageUrl,
+                    DeliveryFee = r.DeliveryFee,
                     Manager = managerDto
                 };
             });
@@ -184,7 +184,7 @@ namespace Explorer.Stakeholders.Core.UseCases
             if (!Enum.TryParse<CuisineType>(dto.Cuisine, true, out var cuisineEnum))
                 return Result.Fail("Invalid cuisine type.");
 
-            restaurant.Update(dto.Name, dto.Address, dto.PhoneNumber, dto.IsActive, cuisineEnum, dto.ImageUrl);
+            restaurant.Update(dto.Name, dto.Address, dto.PhoneNumber, dto.IsActive, cuisineEnum, dto.ImageUrl, dto.DeliveryFee);
 
             if (dto.Manager != null && !string.IsNullOrWhiteSpace(dto.Manager.Password))
             {
@@ -226,6 +226,7 @@ namespace Explorer.Stakeholders.Core.UseCases
                 IsActive = restaurant.IsActive,
                 Cuisine = restaurant.GetCuisineTypeName(),
                 ImageUrl = restaurant.ImageUrl,
+                DeliveryFee = restaurant.DeliveryFee,
                 Manager = restaurant.Manager == null ? null : new UserDto
                 {
                     Id = restaurant.Manager.Id,
@@ -237,6 +238,17 @@ namespace Explorer.Stakeholders.Core.UseCases
                     Email = managerPerson?.Email
                 }
             });
+        }
+
+        public async Task<Result> UpdateDeliveryFeeAsync(int restaurantId, int deliveryFee)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(restaurantId);
+            if (restaurant == null) return Result.Fail("Restaurant not found.");
+
+            restaurant.UpdateDeliveryFee(deliveryFee);
+            await _restaurantRepository.UpdateAsync(restaurant);
+
+            return Result.Ok();
         }
 
         public async Task<Result> DeleteRestaurantAsync(int id)
@@ -281,7 +293,8 @@ namespace Explorer.Stakeholders.Core.UseCases
                 dto.PhoneNumber,
                 dto.IsActive,
                 cuisineEnum,
-                dto.ImageUrl
+                dto.ImageUrl,
+                dto.DeliveryFee
             );
 
             restaurant.SetManager(manager);
@@ -297,6 +310,7 @@ namespace Explorer.Stakeholders.Core.UseCases
                 IsActive = restaurant.IsActive,
                 Cuisine = restaurant.GetCuisineTypeName(),
                 ImageUrl = restaurant.ImageUrl,
+                DeliveryFee = restaurant.DeliveryFee,
                 Manager = new UserDto
                 {
                     Username = manager.Username,
